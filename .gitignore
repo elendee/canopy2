@@ -1,0 +1,7 @@
+.*
+!.gitignore
+node_modules/*
+_storage/*
+package-lock.json
+resource/*
+
