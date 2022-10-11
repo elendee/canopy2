@@ -6,5 +6,7 @@ const RENDERER = window.RENDERER = new THREE.WebGLRenderer({
 	alpha:true
 });
 RENDERER.setSize( window.innerWidth * RESOLUTION, window.innerHeight * RESOLUTION );
+RENDERER.shadowMap.enabled = true;
+
 
 export default RENDERER

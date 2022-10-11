@@ -1,5 +1,5 @@
-import * as lib from '../lib.js?v=3'
-import Entity from './Entity.js?v=3'
+import * as lib from '../lib.js?v=4'
+import Entity from './Entity.js?v=4'
 
 
 
@@ -11,7 +11,9 @@ for( let i = 0; i < 100; i++ ){
 		color: '#' + lib.random_hex(6),
 	}))
 }
-
+const errormat = new THREE.MeshPhongMaterial({
+	color: 'lightgreen',
+})
 
 
 class Plant extends Entity {
@@ -31,9 +33,12 @@ class Plant extends Entity {
 			called by Enity.js
 		*/
 
-		const model = new THREE.Mesh( boxgeo, lib.random_entry( boxmats ) )
+		console.error('this method must be defined in inherited Plants')
+
+		const model = new THREE.Mesh( boxgeo, errormat )
 		model.scale.multiplyScalar( this.radius )
 		return model
+
 	}
 
 }

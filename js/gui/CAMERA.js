@@ -7,6 +7,9 @@ const CAMERA = new THREE.PerspectiveCamera(
 CAMERA.fixture = new THREE.Group()
 CAMERA.fixture.add( CAMERA )
 
+CAMERA.MIN_DIST = .5
+CAMERA.MAX_DIST = 15
+
 window.CAMERA = CAMERA
 
 export default CAMERA

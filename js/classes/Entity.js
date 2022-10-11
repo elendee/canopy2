@@ -1,4 +1,4 @@
-import * as lib from '../lib.js?v=3'
+import * as lib from '../lib.js?v=4'
 
 
 const ANIM_STEP = 50
@@ -29,28 +29,34 @@ class Entity {
 		if( this.box ) return console.log('dupe init called', this )
 		this.box = new THREE.Group()
 
-		switch( this.type ){
+		// switch( this.type ){
 
-			case 'plant':
-				this.model = await this._load_model()
-				break;
+		// 	case 'plant':
+		// 		this.model = await this._load_model()
+		// 		break;
 
-			case 'canopy':
-				this.model = await this._build_model()
-				break;
+		// 	case 'canopy':
+		// 		this.model = await this._build_model()
+		// 		break;
 
-			case 'player':
-				this.model = await this._load_model( this.model_url )
-				break;
+		// 	case 'player':
+		// 		this.model = await this._load_model( this.model_url )
+		// 		break;
 
-			default:
-				return console.log('unable to load type', this.type )
+		// 	default:
+		// 		return console.log('unable to load type', this.type )
 
-		}
+		// }
+		this.model = await this._load_model()
 
 		if( this.animation ) this.anim_mixer = this.animation.mixer // ( for anim loop access )
 
 		this.box.add( this.model )
+
+		this.box.userData = {
+			clickable: true,
+			type: this.type,
+		}
 
 		// dimensions / scaling
 		this.update_bbox( false )
@@ -141,10 +147,8 @@ class Entity {
 
 		if( state ){ // animate 'on'
 
-			console.log('on')
-
 			if( action.isRunning() ){
-				console.log('action still running; skip: ' + name + ', weight: ' + action.weight )
+				// console.log('action still running; skip: ' + name + ', weight: ' + action.weight )
 				return
 			}
 

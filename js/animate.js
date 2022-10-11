@@ -1,4 +1,4 @@
-import PLAYERS from './registers/PLAYERS.js?v=3'
+import PLAYERS from './registers/PLAYERS.js?v=4'
 
 
 

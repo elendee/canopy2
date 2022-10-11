@@ -1,10 +1,10 @@
-import PLAYER from '../instances/PLAYER.js?v=3'
-import CAMERA from './CAMERA.js?v=3'
-import RAYCASTER from './RAYCASTER.js?v=3'
-import RENDERER from './RENDERER.js?v=3'
-// import SCENE from './SCENE.js?v=3'
-import STATE from './STATE.js?v=3'
-import BROKER from '../EventBroker.js?v=3'
+import PLAYER from '../instances/PLAYER.js?v=4'
+import CAMERA from './CAMERA.js?v=4'
+import RAYCASTER from './RAYCASTER.js?v=4'
+import RENDERER from './RENDERER.js?v=4'
+// import SCENE from './SCENE.js?v=4'
+import STATE from './STATE.js?v=4'
+import BROKER from '../EventBroker.js?v=4'
 
 
 
@@ -35,9 +35,9 @@ const track_look = e => { // ( right click )
 	// BROKER.publish('STREAM_SET')
 	PLAYER.box.rotateY( -diffX / 300 )
 
-	if( current_cam_dist > MAX_DIST * .66 ){
+	if( current_cam_dist > CAMERA.MAX_DIST * .66 ){
 		vert_scalar = 1
-	}else if( current_cam_dist > MAX_DIST * .33 ){
+	}else if( current_cam_dist > CAMERA.MAX_DIST * .33 ){
 		vert_scalar = .25
 	}else{
 		vert_scalar = .05
@@ -46,7 +46,7 @@ const track_look = e => { // ( right click )
 	if( !STATE.first_person ){
 
 		CAMERA.position.y += ( diffY / 20 ) * vert_scalar
-		CAMERA.position.y = Math.min( MAX_DIST, CAMERA.position.y )
+		CAMERA.position.y = Math.min( CAMERA.MAX_DIST, CAMERA.position.y )
 		camera_look_home()
 
 	}else{
@@ -96,9 +96,9 @@ const pan_look = e => { // ( left click )
 
 	CAMERA.fixture.rotateY( -diffX / 300 )
 
-	if( current_cam_dist > MAX_DIST * .66 ){
+	if( current_cam_dist > CAMERA.MAX_DIST * .66 ){
 		vert_scalar = 1
-	}else if( current_cam_dist > MAX_DIST * .33 ){
+	}else if( current_cam_dist > CAMERA.MAX_DIST * .33 ){
 		vert_scalar = .25
 	}else{
 		vert_scalar = .05
@@ -265,7 +265,7 @@ function mouse_wheel( e ){
 
 		move_wheel_amount( scroll_dist, 'in' )
 
-		if( CAMERA.position.length() < MIN_DIST + 1 ){ // GLOBAL.RENDER.MIN_CAM
+		if( CAMERA.position.length() < CAMERA.MIN_DIST + 1 ){ // GLOBAL.RENDER.MIN_CAM
 			set_cam_state( true )
 		}
 
@@ -308,8 +308,7 @@ const camera_look_home = () => {
 const projection = new THREE.Vector3()
 let dist = new THREE.Vector3()
 
-const MIN_DIST = .5
-const MAX_DIST = 5
+
 
 const move_wheel_amount = ( scroll_dist, dir ) => {
 
@@ -317,15 +316,15 @@ const move_wheel_amount = ( scroll_dist, dir ) => {
 
 	dist = projection.distanceTo( ORIGIN )
 
-	if( dist < MIN_DIST || dist < SCROLL_STEP ){  // ( SHIP.dimensions.z / 2 ) * 1.1
+	if( dist < CAMERA.MIN_DIST || dist < SCROLL_STEP ){  // ( SHIP.dimensions.z / 2 ) * 1.1
 		// console.log('no scroll')
 		set_cam_state( true )
 		return false
 	}
 
 	CAMERA.position.add( scroll_dist ).clampLength( 
-		MIN_DIST,
-		Math.max( MIN_DIST * 10, MAX_DIST ) // ( SHIP.dimensions.z / 2 )
+		CAMERA.MIN_DIST,
+		Math.max( CAMERA.MIN_DIST * 10, CAMERA.MAX_DIST ) // ( SHIP.dimensions.z / 2 )
 	)
 
 	camera_look_home()

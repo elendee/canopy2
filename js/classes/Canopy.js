@@ -1,9 +1,14 @@
-import * as lib from '../lib.js?v=3'
-import Entity from './Entity.js?v=3'
+import * as lib from '../lib.js?v=4'
+import Entity from './Entity.js?v=4'
 
 const dishgeo = new THREE.CylinderGeometry(1,1,1, 32) // rt, rb, h, segs
 const dishmat = new THREE.MeshPhongMaterial({
 	color: 'rgb(50, 40, 50)',
+	side: THREE.DoubleSide,
+})
+
+const ring_mat = new THREE.MeshPhongMaterial({
+	color: 'brown',
 })
 
 
@@ -20,6 +25,7 @@ class Canopy extends Entity {
 		this.radius = init.radius || 5
 
 		this.dish = new THREE.Mesh( dishgeo, dishmat )
+		this.dish.receiveShadow = true
 		this.dish.scale.y = .1
 		this.dish.scale.x = this.radius
 		this.dish.scale.z = this.radius
@@ -28,22 +34,23 @@ class Canopy extends Entity {
 		this.PLANTS = {}
 	}
 
-	async _build_model(){
-		/*
-			called by Entity.js
-		*/
+	// async _build_model(){
+	// 	/*
+	// 		called by Entity.js
+	// 	*/
 
-		this.dome = await this._load_geometry()
-		// this.dome.scale.multiplyScalar(-10)
-		const model = new THREE.Group()
-		model.add( this.dome )
-		return model
-	}
+	// 	this.dome = await this._load_geometry()
+	// 	// this.dome.scale.multiplyScalar(-10)
+	// 	const model = new THREE.Group()
+	// 	model.add( this.dome )
+	// 	return model
+	// }
 
-	_load_geometry(){
+	_load_model(){
 
 		return new Promise((resolve, reject) => {
 
+			// build dome
 			const domegeo = new THREE.SphereGeometry(1, 32, 16)
 			const mat = new THREE.MeshPhongMaterial({
 				opacity: .5,
@@ -54,6 +61,32 @@ class Canopy extends Entity {
 			const wireframe = lib.extract_wiremesh( dome, 'white', 32 )
 			wireframe.scale.multiplyScalar( this.radius )
 			dome.scale.multiplyScalar( this.radius )
+
+			// add dish
+			this.box.add( this.dish )
+
+			// add rings
+			const tube = 3
+			const resolution = 16
+			const arc = Math.PI * 2
+			const radial_segments = 6
+			const rings = 5
+			for( let i = 0; i < rings; i++ ){
+				const shrink = 1 - ( ( i / rings ) / 3 )
+				const ring_geo = new THREE.TorusGeometry( 
+					( this.radius + ( tube ) ) * shrink, 
+					tube, 
+					radial_segments, 
+					resolution, 
+					arc 
+				)
+				const ring = new THREE.Mesh( ring_geo, ring_mat )
+				ring.receiveShadow = true
+				ring.rotation.x = Math.PI / 2
+				ring.position.set( 0, -i * 5, 0 )
+				this.box.add( ring )
+			}
+
 			// resolve( dome )
 			resolve( wireframe )
 

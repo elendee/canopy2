@@ -1,5 +1,5 @@
-import Player from '../classes/Player.js?v=3'
-import BROKER from '../EventBroker.js?v=3'
+import Player from '../classes/Player.js?v=4'
+import BROKER from '../EventBroker.js?v=4'
 
 
 // --------------------
@@ -9,6 +9,7 @@ const player = new Player()
 
 
 const allowed_keys = [
+	'speed',
 	'model_url', 
 	'player1',
 	'height',

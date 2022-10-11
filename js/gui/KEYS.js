@@ -1,9 +1,9 @@
 
-import env from '../env.js?v=3'
+import env from '../env.js?v=4'
 
-import BINDS from './BINDS.js?v=3'
+import BINDS from './BINDS.js?v=4'
 
-import BROKER from '../EventBroker.js?v=3'
+import BROKER from '../EventBroker.js?v=4'
 
 
 
