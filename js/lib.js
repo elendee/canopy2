@@ -1,8 +1,8 @@
-import env from './env.js?v=4'
-import hal from './hal.js?v=4'
-// import fetch_wrap from './fetch_wrap.js?v=4'
+import env from './env.js?v=5'
+import hal from './hal.js?v=5'
+// import fetch_wrap from './fetch_wrap.js?v=5'
 
-import BROKER from './EventBroker.js?v=4'
+import BROKER from './EventBroker.js?v=5'
 
 // import { 
 // 	Object3D, 
@@ -588,6 +588,30 @@ const get_bbox = mesh => {
 	return new THREE.Box3().setFromObject( mesh )
 }
 
+
+function random_rgb( p1, p2, p3 ){
+	/* 
+		p1 = [0-255, 0255]
+		p2 = [0-255, 0255]
+		p3 = [0-255, 0255]
+	*/
+
+	if( !Array.isArray( p3 )){
+		console.error('invalid random rgb')
+		return 'rgb(255, 0, 0)'
+	}
+	// if( max < min || min < 0 || max > 255 ) return 'rgb( 0, 0, 0 )'
+
+	let r = p1[0] + Math.floor( Math.random() * ( p1[1] - p1[0] ))
+	let g = p2[0] + Math.floor( Math.random() * ( p2[1] - p2[0] ))
+	let b = p3[0] + Math.floor( Math.random() * ( p3[1] - p3[0] ))
+	// let g = min + Math.floor( Math.random() * ( max - min ))
+	// let b = min + Math.floor( Math.random() * ( max - min ))
+
+	return 'rgb(' + r + ',' + g + ',' + b + ')'
+
+}
+
 export {
 
 	// paths,
@@ -635,4 +659,5 @@ export {
 	gen_input,
 	make_debounce,
 	get_bbox,
+	random_rgb,
 }

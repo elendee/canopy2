@@ -1,5 +1,5 @@
-import * as lib from '../lib.js?v=4'
-import Entity from './Entity.js?v=4'
+import * as lib from '../lib.js?v=5'
+import Entity from './Entity.js?v=5'
 
 const dishgeo = new THREE.CylinderGeometry(1,1,1, 32) // rt, rb, h, segs
 const dishmat = new THREE.MeshPhongMaterial({

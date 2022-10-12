@@ -1,5 +1,5 @@
-import env from '../env.js?v=4'
-// import BROKER from '../EventBroker.js?v=4'
+import env from '../env.js?v=5'
+// import BROKER from '../EventBroker.js?v=5'
 
 
 
@@ -75,7 +75,7 @@ const default_binds = BINDS = {
 
 		reset_camera: 82, // r
 
-		laser: 32, // space
+		jump: 32, // space
 
 		// pico_warp: 32,// space
 

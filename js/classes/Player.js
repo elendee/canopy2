@@ -1,5 +1,5 @@
-import * as lib from '../lib.js?v=4'
-import Entity from './Entity.js?v=4'
+import * as lib from '../lib.js?v=5'
+import Entity from './Entity.js?v=5'
 
 
 // const loader = new THREE.BufferGeometryLoader();

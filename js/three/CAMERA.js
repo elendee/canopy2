@@ -1,7 +1,7 @@
 const CAMERA = new THREE.PerspectiveCamera( 
 	75, 
 	window.innerWidth / window.innerHeight, 
-	1, 
+	.1, 
 	12000 
 );
 CAMERA.fixture = new THREE.Group()

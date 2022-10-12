@@ -1,4 +1,4 @@
-import * as lib from '../lib.js?v=4'
+import * as lib from '../lib.js?v=5'
 
 
 const ANIM_STEP = 50
@@ -128,6 +128,66 @@ class Entity {
 
 	}
 
+	raincheck_idle( time ){
+		if( this.raincheck ) clearTimeout( this.raincheck )
+		this.raincheck = setTimeout(() => {
+			let state = false
+			for( const type in this.animation.actions ){
+				if( this.animation.actions[type].isRunning() ){
+					state = true
+				}
+			}
+			// no actions, so animate idle
+			if( !state ) this.rest()
+			// clear for next check
+			this.raincheck = false
+		}, time)
+	}
+
+	rest(){
+		/*
+			called whenever no anims are detected
+		*/
+		if( !this.animation ) return
+
+		// this.animation.mixer.stopAllAction()
+		this.animate('idle', true, 500 ) // fade_time || 0
+		// setTimeout(() => {
+		// 	for( const type in this.animation_map[ this.modeltype ] ){
+		// 		if( type === 'idle' ) continue
+		// 		// this.set_move_state( type, 0 )
+		// 	}			
+		// }, 800)
+
+	}
+
+	jump(){
+		switch( this.type ){
+			case 'player':
+				if( this.jumping ) return
+				this.animate('jump', true, 0 )
+				setTimeout(() => {
+					this.animate('jump', false, 200 )
+				}, 800 )
+				setTimeout(() => {
+					this.momentum = new THREE.Vector3(0,.15,0)
+					// let elapsed = 0
+					const step = 10
+					this.jumping = setInterval(() => {
+						this.momentum.y -= .004
+						this.box.position.add( this.momentum )
+						if( this.box.position.y <= 0 ){
+							clearInterval( this.jumping)
+							delete this.jumping
+							this.box.position.y = 0
+						}
+					}, step )
+				}, 200)
+				break;
+			default: return console.log('no jump for : ' + this.type )
+		}
+	}
+
 	animate( name, state, fadeN ){
 		if( typeof fadeN !== 'number' ){
 			return console.log('invalid fade', fadeN, name )
@@ -148,7 +208,12 @@ class Entity {
 		if( state ){ // animate 'on'
 
 			if( action.isRunning() ){
-				// console.log('action still running; skip: ' + name + ', weight: ' + action.weight )
+				// problem is this is still true 500ms after action is 'over'
+				// so a "restarting" action never starts
+				// hrm.
+				if( name == 'idle'){
+					this.raincheck_idle( 600 ) // keep longer than anim start / stop
+				}
 				return
 			}
 

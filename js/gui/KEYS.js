@@ -1,9 +1,9 @@
 
-import env from '../env.js?v=4'
+import env from '../env.js?v=5'
 
-import BINDS from './BINDS.js?v=4'
+import BINDS from './BINDS.js?v=5'
 
-import BROKER from '../EventBroker.js?v=4'
+import BROKER from '../EventBroker.js?v=5'
 
 
 
@@ -154,6 +154,12 @@ const handle_keyup = ( e ) => {
 
 		case BINDS.sky.reset_camera:
 			BROKER.publish('MOUSE_UNPAN')
+			break;
+
+		case BINDS.sky.jump:
+			BROKER.publish('MOVE_KEY', {
+				type: 'jump',
+			})
 			break;
 
 		default: 

@@ -1,4 +1,5 @@
-import PLAYERS from './registers/PLAYERS.js?v=4'
+import PLAYERS from './registers/PLAYERS.js?v=5'
+import SCENE from './three/SCENE.js?v=5'
 
 
 

@@ -1,5 +1,5 @@
-import Player from '../classes/Player.js?v=4'
-import BROKER from '../EventBroker.js?v=4'
+import Player from '../classes/Player.js?v=5'
+import BROKER from '../EventBroker.js?v=5'
 
 
 // --------------------
@@ -40,9 +40,11 @@ const move = event => {
 	switch( type ){
 		case 'roll_ccw':
 			player.state.strafing = 1 * (Number(state))
+			player.model.rotation.y = ( Math.PI / 8 ) * state
 			break;
 		case 'roll_cw':
 			player.state.strafing = -1 * (Number(state))
+			player.model.rotation.y = ( Math.PI / 8 ) * -state
 			break;
 		case 'thrust_forward':
 			player.state.walking = 1 * (Number(state))
@@ -50,10 +52,20 @@ const move = event => {
 		case 'thrust_back':
 			player.state.walking = -1 * (Number(state))
 			break;
+		case 'jump':
+			player.jump()
+			break;
 		default: return 'asdf'
 	}
 
-	player.animate( 'walking', state, 500 )
+	// walking
+	if( state && !player.animation.actions.walking.isRunning() ){
+		player.animate( 'walking', state, 500 )
+	}else if( !state ){
+		player.animate( 'walking', false, 500 )
+	}
+	// idling
+	player.animate( 'idle', !state, 500 )
 
 }
 

@@ -1,5 +1,5 @@
-import * as lib from '../../lib.js?v=4'
-import Plant from '../Plant.js?v=4'
+import * as lib from '../../lib.js?v=5'
+import Plant from '../Plant.js?v=5'
 
 const boxgeo = new THREE.BoxBufferGeometry(1,1,1)
 const boxmats = []
@@ -12,6 +12,17 @@ const errormat = new THREE.MeshPhongMaterial({
 	color: 'red',
 })
 
+const leafgeo = new THREE.BoxBufferGeometry(1,1,1)
+
+const leafmats = []
+for( let i = 0; i< 5; i++ ){
+	const leafmat = new THREE.MeshPhongMaterial({
+		color: lib.random_rgb([0,50], [100, 255], [100, 200]),
+		transparent: true,
+		opacity: .8,
+	})	
+	leafmats.push( leafmat )
+}
 
 
 
@@ -48,7 +59,77 @@ class Branch {
 		}
 	}
 
-	grow( step, elapsed, is_branched ){
+	add_segment( first_marked, last_growth, delay, step ){
+
+		const segment = new THREE.Mesh( boxgeo, first_marked ? this.mat : errormat )
+		segment.castShadow = true
+		segment.receiveShadow = true
+		segment.scale.multiplyScalar( this.current_size )
+		this.segments.push( segment )
+
+		if( !last_growth ){ // first growth from init
+			// console.log('new branch pos: ', this.position )
+			segment.position.copy( this.position )
+
+		}else{ // following segments recurse
+
+			segment.position.copy( last_growth.position )
+			// growth.lookAt( growth.position.clone().add( this.direction ) )
+			const addition = new THREE.Vector3().copy( this.direction )
+			addition.multiplyScalar( this.current_size ) 
+			segment.position.add( addition )
+			// if( addition.length() > 1 ) debugger
+
+			if( Math.random() < this.branchiness ){
+
+				// make new branch
+				const new_data = {
+					direction: this.direction.clone().add( 
+						lib.random_vector_range(-1, 1).multiplyScalar( this.scraggliness ) 
+						).normalize(),
+
+					start_size: this.current_size,// - this.taper,
+
+					taper: this.taper,
+					min_size: Math.max( .1, this.min_size - .1 ),
+
+					branchiness: this.branchiness,
+					scraggliness: this.scraggliness,
+					growth_length: this.growth_length,
+					mat: this.mat,
+				}
+
+				const new_pos = new THREE.Vector3().copy( segment.position )
+				// const gap = ( this.start_size * this.growth_length )
+				// console.log('why gap so big', gap )
+				// console.log('dir normal?', new_data.direction )
+				// new_pos.add( gap )
+
+				// new_pos.add( new_data.direction.clone().multiplyScalar( gap ) )
+
+				new_data.position = new_pos 
+				// console.log( 'nd: ', new_data )
+
+				const newbranch = new Branch( new_data )
+				setTimeout(() => {
+					this.group.add( newbranch.grow( step, delay, true ) )
+				}, delay )
+
+				// redirect old branch a bit too
+				this.direction.add( lib.random_vector_range(-1, 1).multiplyScalar( this.scraggliness / 2 ) ).normalize()
+
+			}
+
+			// if( is_branched ) console.log('growing branches....')
+
+		}
+
+		return segment 
+
+	}
+
+
+	grow( step, delay, is_branched ){
 
 		let c = 0
 		this.current_size = this.start_size
@@ -58,70 +139,11 @@ class Branch {
 		let last_growth
 		while( this.current_size > this.min_size && c < 100 ){
 
-			const segment = new THREE.Mesh( boxgeo, first_marked ? this.mat : errormat )
+			const segment = this.add_segment( first_marked, last_growth, delay, step )
+
+			// adjust for next segment
 			first_marked = true
-			segment.castShadow = true
-			segment.receiveShadow = true
-			segment.scale.multiplyScalar( this.current_size )
-			this.segments.push( segment )
-
-			if( !last_growth ){ // first growth from init
-				// console.log('new branch pos: ', this.position )
-				segment.position.copy( this.position )
-
-			}else{ // following segments recurse
-
-				segment.position.copy( last_growth.position )
-				// growth.lookAt( growth.position.clone().add( this.direction ) )
-				const addition = new THREE.Vector3().copy( this.direction )
-				addition.multiplyScalar( this.current_size ) 
-				segment.position.add( addition )
-				// if( addition.length() > 1 ) debugger
-
-				if( Math.random() < this.branchiness ){
-
-					// make new branch
-					const new_data = {
-						direction: this.direction.clone().add( 
-							lib.random_vector_range(-1, 1).multiplyScalar( this.scraggliness ) 
-							).normalize(),
-
-						start_size: this.current_size,// - this.taper,
-
-						taper: this.taper,
-						min_size: Math.max( .1, this.min_size - .1 ),
-
-						branchiness: this.branchiness,
-						scraggliness: this.scraggliness,
-						growth_length: this.growth_length,
-						mat: this.mat,
-					}
-
-					const new_pos = new THREE.Vector3().copy( segment.position )
-					// const gap = ( this.start_size * this.growth_length )
-					// console.log('why gap so big', gap )
-					// console.log('dir normal?', new_data.direction )
-					// new_pos.add( gap )
-
-					// new_pos.add( new_data.direction.clone().multiplyScalar( gap ) )
-
-					new_data.position = new_pos 
-					// console.log( 'nd: ', new_data )
-
-					const newbranch = new Branch( new_data )
-					elapsed += step
-					setTimeout(() => {
-						this.group.add( newbranch.grow( step, elapsed, true ) )
-					}, elapsed )
-
-					// redirect old branch a bit too
-					this.direction.add( lib.random_vector_range(-1, 1).multiplyScalar( this.scraggliness / 2 ) ).normalize()
-
-				}
-
-				// if( is_branched ) console.log('growing branches....')
-
-			}
+			delay += step
 			last_growth = segment
 			this.current_size -= this.taper
 
@@ -130,13 +152,20 @@ class Branch {
 		} // while loop
 
 		if( this.segments.length ){
-			// console.log( 'branch: ', this.segments.length )
-		}else{
-			const flag = new THREE.Mesh( boxgeo, errormat )
-			// flag.multiplyScalar
-			flag.scale.multiplyScalar( 2 )
-			this.group.add( flag )
+			const leaves = new THREE.Mesh( leafgeo, lib.random_entry( leafmats ) )
+			leaves.scale.multiplyScalar( this.start_size * 2 )
+			leaves.position.copy( last_growth.position )
+			this.group.add( leaves )
 		}
+
+		// if( this.segments.length ){
+		// 	// console.log( 'branch: ', this.segments.length )
+		// }else{ // 
+		// 	const flag = new THREE.Mesh( boxgeo, errormat )
+		// 	// flag.multiplyScalar
+		// 	flag.scale.multiplyScalar( 2 )
+		// 	this.group.add( flag )
+		// }
 		return this.group
 
 	}// grow

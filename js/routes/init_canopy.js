@@ -1,63 +1,27 @@
-import env from '../env.js?v=4'
-import BROKER from '../EventBroker.js?v=4'
-import Canopy from "../classes/Canopy.js?v=4";
-import CANOPY from "../instances/CANOPY.js?v=4";
-import Plant from "../classes/Plant.js?v=4";
-// import Player from '../classes/Player.js?v=4'
-import PLAYER from '../instances/PLAYER.js?v=4'
-import animate from '../animate.js?v=4';
-import KEYS from '../gui/KEYS.js?v=4';
-import CAMERA from '../gui/CAMERA.js?v=4';
-import RENDERER from '../gui/RENDERER.js?v=4';
-import MOUSE from '../gui/MOUSE.js?v=4';
-import PLAYERS from '../registers/PLAYERS.js?v=4';
-import TARGET from '../gui/TARGET.js?v=4';
-
+import env from '../env.js?v=5'
+import BROKER from '../EventBroker.js?v=5'
+import Canopy from "../classes/Canopy.js?v=5";
+import CANOPY from "../instances/CANOPY.js?v=5";
+import Plant from "../classes/Plant.js?v=5";
+// import Player from '../classes/Player.js?v=5'
+import PLAYER from '../instances/PLAYER.js?v=5'
+import animate from '../animate.js?v=5';
+import KEYS from '../gui/KEYS.js?v=5';
+import CAMERA from '../three/CAMERA.js?v=5';
+import RENDERER from '../three/RENDERER.js?v=5';
+import MOUSE from '../gui/MOUSE.js?v=5';
+import PLAYERS from '../registers/PLAYERS.js?v=5';
+import TARGET from '../gui/TARGET.js?v=5';
+import LIGHT from '../three/LIGHT.js?v=5'
+import SCENE from '../three/SCENE.js?v=5'
 
 
 ;(async() => {
 
 	document.body.appendChild( RENDERER.domElement );
 
-	// scene
-	const SCENE = window.SCENE = new THREE.Scene();
-
-	// light
-	// const LIGHT = new THREE.HemisphereLight(0xffffff, 0x080820, 1)
-	const LIGHT = window.LIGHT = new THREE.DirectionalLight(0xffffff, 1) // , 0x080820, 1
-	LIGHT.position.set( 20, 100, 0)
-	LIGHT.castShadow = true
-	LIGHT.shadow.mapSize.width = 512; // default
-	LIGHT.shadow.mapSize.height = 512; // default
-	LIGHT.shadow.camera.near = 0.1; // default
-	LIGHT.shadow.camera.far = 500; // default
-
-	LIGHT.shadow.camera.left = -CANOPY.radius;
-	LIGHT.shadow.camera.right = CANOPY.radius;
-	LIGHT.shadow.camera.top = CANOPY.radius;
-	LIGHT.shadow.camera.bottom = -CANOPY.radius;
-
-	const helper = new THREE.DirectionalLightHelper( LIGHT, 5 )
-	SCENE.add( helper )
-
-	const AMBIENT = new THREE.AmbientLight( 0xffffff, .3 )
-	SCENE.add( AMBIENT )
-
-
-	// const LIGHT = new THREE.SpotLight(0xffffff) // , 0x080820, 1
-	// LIGHT.castShadow = true
-	// LIGHT.position.set( 5, 10, 5)
-	// LIGHT.lookAt( new THREE.Vector3() )
-
-	// // SPOTLIGHT stuff:
-	// // LIGHT.map = new THREE.TextureLoader().load( url )
-	// LIGHT.shadow.mapSize.width = 1024;
-	// LIGHT.shadow.mapSize.height = 1024;
-	// LIGHT.shadow.camera.near = 1;
-	// LIGHT.shadow.camera.far = 4000;
-	// LIGHT.shadow.camera.fov = 30;
-
-	SCENE.add( LIGHT )
+	SCENE.add( LIGHT.ambient )
+	SCENE.add( LIGHT.directional )
 
 	// canopy / dome / ground
 	await CANOPY.init_model()
@@ -76,18 +40,21 @@ import TARGET from '../gui/TARGET.js?v=4';
 	PLAYER.scaleTo( PLAYER.height )
 	PLAYER.box.position.set(0, 0, 3)
 	PLAYER.box.add( CAMERA.fixture )
+	CAMERA.fixture.position.y = 1
 	PLAYERS[ PLAYER.uuid ] = PLAYER
 	SCENE.add( PLAYER.box )
 
-	const START_CAM_DIST = 12
+	const START_CAM_DIST = 2
 	// camera / controls
 	CAMERA.position.set( 0, START_CAM_DIST, -START_CAM_DIST ) 
 	CAMERA.lookAt( CAMERA.fixture.position )
 
 	animate()
 
+
+
 	// plants
-	for( let i = 0; i< 8; i++ ){
+	for( let i = 0; i < 5; i++ ){
 		BROKER.publish('CANOPY_ADD_PLANT', {
 			data: {
 				type: 'tree',

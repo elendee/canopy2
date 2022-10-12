@@ -1,10 +1,10 @@
-import PLAYER from '../instances/PLAYER.js?v=4'
-import CAMERA from './CAMERA.js?v=4'
-import RAYCASTER from './RAYCASTER.js?v=4'
-import RENDERER from './RENDERER.js?v=4'
-// import SCENE from './SCENE.js?v=4'
-import STATE from './STATE.js?v=4'
-import BROKER from '../EventBroker.js?v=4'
+import PLAYER from '../instances/PLAYER.js?v=5'
+import CAMERA from '../three/CAMERA.js?v=5'
+import RAYCASTER from '../three/RAYCASTER.js?v=5'
+import RENDERER from '../three/RENDERER.js?v=5'
+import SCENE from '../three/SCENE.js?v=5'
+import STATE from './STATE.js?v=5'
+import BROKER from '../EventBroker.js?v=5'
 
 
 
@@ -36,11 +36,11 @@ const track_look = e => { // ( right click )
 	PLAYER.box.rotateY( -diffX / 300 )
 
 	if( current_cam_dist > CAMERA.MAX_DIST * .66 ){
-		vert_scalar = 1
+		vert_scalar = 2
 	}else if( current_cam_dist > CAMERA.MAX_DIST * .33 ){
-		vert_scalar = .25
+		vert_scalar = .5
 	}else{
-		vert_scalar = .05
+		vert_scalar = .1
 	}
 
 	if( !STATE.first_person ){
@@ -265,7 +265,7 @@ function mouse_wheel( e ){
 
 		move_wheel_amount( scroll_dist, 'in' )
 
-		if( CAMERA.position.length() < CAMERA.MIN_DIST + 1 ){ // GLOBAL.RENDER.MIN_CAM
+		if( CAMERA.position.length() < CAMERA.MIN_DIST + .1 ){ // GLOBAL.RENDER.MIN_CAM
 			set_cam_state( true )
 		}
 
@@ -278,20 +278,20 @@ function mouse_wheel( e ){
 }
 
 
-const set_cam_state = state => {
+const set_cam_state = first_person => {
 	if( !PLAYER.box ) return
-	if( state ){
+	if( first_person ){
 		STATE.first_person = true
 		CAMERA.position.set(0,0,-1)
 		PLAYER.box.visible = false
 		CAMERA.rotation.x = Math.PI
 	}else{
 		STATE.first_person = false
-		CAMERA.position.set(0,5,-10)
+		CAMERA.position.set(0,1,-1)
 		PLAYER.box.visible = true
 	}
 	// CAMERA.rotation.x = 0
-	console.log('skipping set_cam_state ', state )
+	// console.log('skipping set_cam_state ', state )
 }
 
 
