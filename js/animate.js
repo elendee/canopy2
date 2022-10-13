@@ -1,6 +1,6 @@
-// import PLAYERS from './registers/PLAYERS.js?v=5'
-import ENTITIES from './registers/ENTITIES.js?v=5'
-import SCENE from './three/SCENE.js?v=5'
+// import PLAYERS from './registers/PLAYERS.js?v=6'
+import ENTITIES from './registers/ENTITIES.js?v=6'
+import SCENE from './three/SCENE.js?v=6'
 
 
 

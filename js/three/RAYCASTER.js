@@ -1,4 +1,4 @@
-import CAMERA from './CAMERA.js?v=5'
+import CAMERA from './CAMERA.js?v=6'
 
 const raycaster = new THREE.Raycaster(); 
 raycaster.camera = CAMERA

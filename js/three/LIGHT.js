@@ -1,4 +1,4 @@
-import SCENE from './SCENE.js?v=5'
+import SCENE from './SCENE.js?v=6'
 
 // light
 // const LIGHT = new THREE.HemisphereLight(0xffffff, 0x080820, 1)

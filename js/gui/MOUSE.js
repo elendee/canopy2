@@ -1,10 +1,10 @@
-import PLAYER from '../instances/PLAYER.js?v=5'
-import CAMERA from '../three/CAMERA.js?v=5'
-import RAYCASTER from '../three/RAYCASTER.js?v=5'
-import RENDERER from '../three/RENDERER.js?v=5'
-import SCENE from '../three/SCENE.js?v=5'
-import STATE from './STATE.js?v=5'
-import BROKER from '../EventBroker.js?v=5'
+import PLAYER from '../instances/PLAYER.js?v=6'
+import CAMERA from '../three/CAMERA.js?v=6'
+import RAYCASTER from '../three/RAYCASTER.js?v=6'
+import RENDERER from '../three/RENDERER.js?v=6'
+import SCENE from '../three/SCENE.js?v=6'
+import STATE from './STATE.js?v=6'
+import BROKER from '../EventBroker.js?v=6'
 
 
 

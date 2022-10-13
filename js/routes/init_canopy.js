@@ -1,20 +1,20 @@
-import env from '../env.js?v=5'
-import BROKER from '../EventBroker.js?v=5'
-import Canopy from "../classes/Canopy.js?v=5";
-import CANOPY from "../instances/CANOPY.js?v=5";
-import Plant from "../classes/Plant.js?v=5";
-// import Player from '../classes/Player.js?v=5'
-import PLAYER from '../instances/PLAYER.js?v=5'
-import animate from '../animate.js?v=5';
-import KEYS from '../gui/KEYS.js?v=5';
-import CAMERA from '../three/CAMERA.js?v=5';
-import RENDERER from '../three/RENDERER.js?v=5';
-import MOUSE from '../gui/MOUSE.js?v=5';
-import ENTITIES from '../registers/ENTITIES.js?v=5'
-// import PLAYERS from '../registers/PLAYERS.js?v=5';
-import TARGET from '../gui/TARGET.js?v=5';
-import LIGHT from '../three/LIGHT.js?v=5'
-import SCENE from '../three/SCENE.js?v=5'
+import env from '../env.js?v=6'
+import BROKER from '../EventBroker.js?v=6'
+import Canopy from "../classes/Canopy.js?v=6";
+import CANOPY from "../instances/CANOPY.js?v=6";
+import Plant from "../classes/Plant.js?v=6";
+// import Player from '../classes/Player.js?v=6'
+import PLAYER from '../instances/PLAYER.js?v=6'
+import animate from '../animate.js?v=6';
+import KEYS from '../gui/KEYS.js?v=6';
+import CAMERA from '../three/CAMERA.js?v=6';
+import RENDERER from '../three/RENDERER.js?v=6';
+import MOUSE from '../gui/MOUSE.js?v=6';
+import ENTITIES from '../registers/ENTITIES.js?v=6'
+// import PLAYERS from '../registers/PLAYERS.js?v=6';
+import TARGET from '../gui/TARGET.js?v=6';
+import LIGHT from '../three/LIGHT.js?v=6'
+import SCENE from '../three/SCENE.js?v=6'
 
 
 ;(async() => {

@@ -1,5 +1,5 @@
-import * as lib from '../lib.js?v=5'
-import Entity from './Entity.js?v=5'
+import * as lib from '../lib.js?v=6'
+import Entity from './Entity.js?v=6'
 
 
 

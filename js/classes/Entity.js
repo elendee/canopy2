@@ -1,7 +1,7 @@
-import * as lib from '../lib.js?v=5'
-// import ENTITIES from '../registers/ENTITIES.js?v=5'
-import RAYCASTER from '../three/RAYCASTER.js?v=5'
-import SCENE from '../three/SCENE.js?v=5'
+import * as lib from '../lib.js?v=6'
+// import ENTITIES from '../registers/ENTITIES.js?v=6'
+import RAYCASTER from '../three/RAYCASTER.js?v=6'
+import SCENE from '../three/SCENE.js?v=6'
 
 
 
