@@ -97,11 +97,11 @@ const pan_look = e => { // ( left click )
 	CAMERA.fixture.rotateY( -diffX / 300 )
 
 	if( current_cam_dist > CAMERA.MAX_DIST * .66 ){
-		vert_scalar = 1
+		vert_scalar = 2
 	}else if( current_cam_dist > CAMERA.MAX_DIST * .33 ){
-		vert_scalar = .25
+		vert_scalar = .5
 	}else{
-		vert_scalar = .05
+		vert_scalar = .1
 	}
 
 	// CAMERA.fixture.rotateX( diffY / 300 )

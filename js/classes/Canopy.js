@@ -155,7 +155,7 @@ class Canopy extends Entity {
 		)
 		this.box.add( new_plant.box )
 
-		this.update_bbox()
+		this.update_bbox( true )
 
 	}
 

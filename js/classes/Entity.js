@@ -24,6 +24,11 @@ const nearbyMat = new THREE.MeshPhongMaterial({
 })
 
 const WORLD_POS_HOLDER = new THREE.Vector3()
+let directionality = {
+	one: false,
+	two: false,
+}
+
 
 
 
@@ -125,18 +130,17 @@ class Entity {
 
 		// set collide radius for all its children
 		if( update_collide_radii ){
-			if( !this.box.traverse ) return console.log('um', this )
-			this.box.traverse( child => {
-				if( child.isMesh ){
-					const bbox = lib.get_bbox( child )
-					const dims = {}
-					for( const dim in bbox.min ){
-						dims[dim] = bbox.max[dim] - bbox.min[dim]
+			if( this.player1 ){
+				this.collide_radius = lib.average_bbox( this.bbox )
+			}else{
+				this.box.traverse( child => {
+					if( child.isMesh ){
+						if( !child.userData ) child.userData = {}
+						const bbox = lib.get_bbox( child )
+						child.userData.collide_radius = lib.average_bbox( bbox ) * .75
 					}
-					if( !child.userData ) child.userData = {}
-					child.userData.collide_radius = ( dims.x + dims.y + dims.z ) / 3
-				}
-			})
+				})	
+			}
 		}
 
 	}
@@ -298,20 +302,26 @@ class Entity {
 
 		}
 
-
-
+		// collisions
 		for( const mesh of this.NEARBY ){
 			mesh.getWorldPosition( WORLD_POS_HOLDER )
 			this.collided = lib.collide_test( WORLD_POS_HOLDER, mesh.userData?.collide_radius, this.ghost.next.position, this.radius )
 			if( this.collided ){ 
-				// reset coords
-				// this.box.position.copy( this.ghost.last.position )
-				// this.box.quaternion.copy( this.ghost.last.quaternion )
-				this.ghost.next.position.copy( this.box.position )
-				this.ghost.next.quaternion.copy( this.box.quaternion )
+				// test if player is moving -towards- collision or away
+				mesh.getWorldPosition( WORLD_POS_HOLDER )
+				directionality.current = this.box.position.distanceTo( WORLD_POS_HOLDER )
+				mesh.getWorldPosition( WORLD_POS_HOLDER )
+				directionality.next = this.ghost.next.position.distanceTo( WORLD_POS_HOLDER )
+				if( directionality.next < directionality.current ){
+					// reset coords
+					// this.box.position.copy( this.ghost.last.position )
+					// this.box.quaternion.copy( this.ghost.last.quaternion )
+					this.ghost.next.position.copy( this.box.position )
+					this.ghost.next.quaternion.copy( this.box.quaternion )
+					// console.log( this.collided )
+					break;					
+				}
 
-				// console.log( this.collided )
-				break;
 			}
 		}
 		this.box.position.copy( this.ghost.next.position )
@@ -329,10 +339,6 @@ class Entity {
 
 
 
-
-	// ----------------------------------------------------------------
-	// collisions
-	// ----------------------------------------------------------------
 
 
 
@@ -393,29 +399,33 @@ class Entity {
 		switch( this.type ){
 
 			case 'player':
+
 				if( this.jumping ) return
+
 				this.animate('jump', true, 0 )
+
 				setTimeout(() => {
 					this.animate('jump', false, 200 )
 				}, 800 )
-				// setTimeout(() => {
+
 				this.momentum = new THREE.Vector3(0,.15,0)
-				// let elapsed = 0
+
 				const step = 10
 				this.jumping = setInterval(() => {
 					this.momentum.y -= .004
 					if( this.momentum.y <= 0 ){
 						clearInterval( this.jumping )
 						delete this.jumping
-						console.log("returning fall")
 						return this.fall()
 					}
-					this.box.position.add( this.momentum )
+					this.ghost.next.position.add( this.momentum )
 
 				}, step )
-				// }, 50)
+
 				break;
+
 			default: return console.log('no jump for : ' + this.type )
+
 		}
 
 	}

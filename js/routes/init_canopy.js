@@ -39,6 +39,7 @@ import SCENE from '../three/SCENE.js?v=5'
 	PLAYER.hydrate( spoofed_player_init )
 	await PLAYER.init_model()
 	PLAYER.scaleTo( PLAYER.height )
+	PLAYER.update_bbox( true )
 	PLAYER.box.position.set(0, 0, 3)
 	SCENE.add( PLAYER.box )
 	setTimeout(() => {
@@ -65,7 +66,7 @@ import SCENE from '../three/SCENE.js?v=5'
 
 
 	// plants
-	for( let i = 0; i < 1; i++ ){
+	for( let i = 0; i < 5; i++ ){
 		BROKER.publish('CANOPY_ADD_PLANT', {
 			data: {
 				type: 'tree',

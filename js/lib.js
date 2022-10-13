@@ -158,7 +158,7 @@ const random_vector_range = ( min, range, vec3, logg ) => {
 
 	if( vec3 ) rand.add( vec3 )
 
-	if( logg) console.log( rand )
+	// if( logg) console.log( rand )
 
 	return rand
 
@@ -634,6 +634,14 @@ const collide_test = ( pos1, mesh1_radius, pos2, mesh2_radius ) => {
 }
 
 
+const average_bbox = bbox => {
+	const dims = {}
+	for( const dim in bbox.min ){
+		dims[dim] = bbox.max[dim] - bbox.min[dim]
+	}
+	return ( dims.x + dims.y + dims.z ) / 3
+}
+
 
 
 export {
@@ -682,6 +690,7 @@ export {
 	gen_input,
 	make_debounce,
 	get_bbox,
+	average_bbox,
 	random_rgb,
 	collide_test,
 }
