@@ -37,6 +37,8 @@ const move = event => {
 
 	const { type, state } = event
 
+	// console.log( type, state )
+
 	switch( type ){
 		case 'roll_ccw':
 			player.state.strafing = 1 * (Number(state))
@@ -66,6 +68,15 @@ const move = event => {
 	}
 	// idling
 	player.animate( 'idle', !state, 500 )
+
+	// moving for physics checks
+	player.isMoving = false
+	for( const key in player.state ){
+		if( player.state[key] ){
+			player.isMoving = true
+			break;
+		}
+	}
 
 }
 

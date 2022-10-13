@@ -132,7 +132,9 @@ function random_hex( len ){
 }
 
 
-const random_vector_range = ( min, range, vec3 ) => {
+const random_vector_range = ( min, range, vec3, logg ) => {
+
+	const upper = min + ( random_range( 0, range ) )
 
 	const rand = new THREE.Vector3(
 		Math.random(),
@@ -140,7 +142,11 @@ const random_vector_range = ( min, range, vec3 ) => {
 		Math.random(),
 	)
 	.normalize()
-	.multiplyScalar( min + ( random_range( 0, range ) ) )
+	.multiplyScalar( upper );
+
+	// if( logg ) throw new Error()
+		// console.log( min, range, upper )
+
 	if( Math.random() > .5 ) rand.x *= -1
 	if( Math.random() > .5 ) rand.y *= -1
 	if( Math.random() > .5 ) rand.z *= -1
@@ -151,6 +157,8 @@ const random_vector_range = ( min, range, vec3 ) => {
 	}
 
 	if( vec3 ) rand.add( vec3 )
+
+	if( logg) console.log( rand )
 
 	return rand
 
@@ -612,6 +620,22 @@ function random_rgb( p1, p2, p3 ){
 
 }
 
+
+const collide_test = ( pos1, mesh1_radius, pos2, mesh2_radius ) => {
+	mesh1_radius = mesh1_radius || .1
+	mesh2_radius = mesh2_radius || .1
+	if( !mesh1_radius || !mesh2_radius ) return console.log('invalid collide radii')
+	const dist = pos1.distanceTo( pos2 )
+	if( mesh1_radius + mesh2_radius > dist ){
+		// console.log('collided - ', mesh1.userData )
+		return dist// mesh1_radius + mesh2_radius
+	}
+	return false
+}
+
+
+
+
 export {
 
 	// paths,
@@ -640,7 +664,6 @@ export {
 
 	colors,
 	// flash,
-	// collide_dist,
 	extract_wiremesh,
 
 	// mathy stuff
@@ -660,4 +683,5 @@ export {
 	make_debounce,
 	get_bbox,
 	random_rgb,
+	collide_test,
 }

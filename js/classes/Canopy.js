@@ -26,6 +26,9 @@ class Canopy extends Entity {
 
 		this.dish = new THREE.Mesh( dishgeo, dishmat )
 		this.dish.receiveShadow = true
+		this.dish.userData = {
+			standable: true,
+		}
 		this.dish.scale.y = .1
 		this.dish.scale.x = this.radius
 		this.dish.scale.z = this.radius
@@ -117,35 +120,42 @@ class Canopy extends Entity {
 
 	plant( new_plant ){
 
-		let available_spot
+		let spot_available
 		let c = 0
-		while( !available_spot && c < 100 ){
-			available_spot = lib.random_vector_range(-this.radius * .75, this.radius * .75 )
-			available_spot.y = 0
+		while( !spot_available && c < 100 ){
+			spot_available = lib.random_vector_range( 0, this.radius * .75, null, true ) // -this.radius * .75
+			// console.log("test: ", spot_available, this.radius  )
+			spot_available.y = 0
 			let combined_radii
 			let testplant, dist
+
+			// console.log('test plant radius', new_plant.radius )
+
 			for( let uuid in this.PLANTS ){
 				testplant = this.PLANTS[uuid]
 				combined_radii = testplant.radius + new_plant.radius
-				dist = testplant.box.position.distanceTo( available_spot )
+				dist = testplant.box.position.distanceTo( spot_available )
 				if( dist < combined_radii ){
-					available_spot = false
+					spot_available = false
 					break;
 				}
 			}
 			c++
 		}
-		if( !available_spot ) return console.log('no space for plant')
+		if( !spot_available ) return console.log('no space for plant')
 
 		// and add to scene.. maybe should move out of this function
 		this.PLANTS[ new_plant.box.uuid ] = new_plant
 
-		new_plant.box.position.set(
-			available_spot.x,
-			available_spot.y,
-			available_spot.z,
+		new_plant.ghost.next.position.set(
+		// new_plant.box.position.set(
+			spot_available.x,
+			spot_available.y,
+			spot_available.z,
 		)
 		this.box.add( new_plant.box )
+
+		this.update_bbox()
 
 	}
 

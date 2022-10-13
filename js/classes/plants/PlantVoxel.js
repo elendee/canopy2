@@ -17,7 +17,7 @@ const leafgeo = new THREE.BoxBufferGeometry(1,1,1)
 const leafmats = []
 for( let i = 0; i< 5; i++ ){
 	const leafmat = new THREE.MeshPhongMaterial({
-		color: lib.random_rgb([0,50], [100, 255], [100, 200]),
+		color: lib.random_rgb([0,50], [50, 255], [30, 120]),
 		transparent: true,
 		opacity: .8,
 	})	
@@ -34,6 +34,9 @@ const STEP_SPEED = 100
 class Branch {
 	constructor(init){
 		this.uuid = init.uuid || lib.random_hex(12)
+		this.entity_uuid = init.entity_uuid // should always be passed
+		if( !init.entity_uuid ) console.error('branch is missing parent uuid')
+
 		this.mat = init.mat
 		this.segments = []
 
@@ -65,6 +68,10 @@ class Branch {
 		segment.castShadow = true
 		segment.receiveShadow = true
 		segment.scale.multiplyScalar( this.current_size )
+		segment.userData = {
+			standable: true,
+			parent_branch: this.uuid,
+		}
 		this.segments.push( segment )
 
 		if( !last_growth ){ // first growth from init
@@ -97,6 +104,7 @@ class Branch {
 					scraggliness: this.scraggliness,
 					growth_length: this.growth_length,
 					mat: this.mat,
+					entity_uuid: this.entity_uuid,
 				}
 
 				const new_pos = new THREE.Vector3().copy( segment.position )
@@ -153,6 +161,8 @@ class Branch {
 
 		if( this.segments.length ){
 			const leaves = new THREE.Mesh( leafgeo, lib.random_entry( leafmats ) )
+			leaves.receiveShadow = true
+			leaves.castShadow = true
 			leaves.scale.multiplyScalar( this.start_size * 2 )
 			leaves.position.copy( last_growth.position )
 			this.group.add( leaves )
@@ -216,6 +226,7 @@ class PlantVoxel extends Plant {
 			branchiness: this.branchiness,
 			scraggliness: this.scraggliness,
 			growth_length: 2,
+			entity_uuid: this.uuid,
 		})
 
 		this.model.add( this.trunk.grow( step, 0 ) )

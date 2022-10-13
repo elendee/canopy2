@@ -1,4 +1,5 @@
-import PLAYERS from './registers/PLAYERS.js?v=5'
+// import PLAYERS from './registers/PLAYERS.js?v=5'
+import ENTITIES from './registers/ENTITIES.js?v=5'
 import SCENE from './three/SCENE.js?v=5'
 
 
@@ -28,8 +29,12 @@ const animate = () => {
 	// 	mark_colliders( SATELLITES, SATELLITES )
 	// 	mark_containers()
 	// }
-	for( const uuid in PLAYERS ){
-		PLAYERS[uuid].update( delta_seconds )
+	// for( const uuid in PLAYERS ){
+	// 	PLAYERS[uuid].update( delta_seconds )
+	// }
+
+	for( const entity of ENTITIES ){
+		entity.update( delta_seconds )
 	}
 
 	if( animating ) requestAnimationFrame( animate )

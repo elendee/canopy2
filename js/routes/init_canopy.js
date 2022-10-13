@@ -10,7 +10,8 @@ import KEYS from '../gui/KEYS.js?v=5';
 import CAMERA from '../three/CAMERA.js?v=5';
 import RENDERER from '../three/RENDERER.js?v=5';
 import MOUSE from '../gui/MOUSE.js?v=5';
-import PLAYERS from '../registers/PLAYERS.js?v=5';
+import ENTITIES from '../registers/ENTITIES.js?v=5'
+// import PLAYERS from '../registers/PLAYERS.js?v=5';
 import TARGET from '../gui/TARGET.js?v=5';
 import LIGHT from '../three/LIGHT.js?v=5'
 import SCENE from '../three/SCENE.js?v=5'
@@ -39,10 +40,21 @@ import SCENE from '../three/SCENE.js?v=5'
 	await PLAYER.init_model()
 	PLAYER.scaleTo( PLAYER.height )
 	PLAYER.box.position.set(0, 0, 3)
+	SCENE.add( PLAYER.box )
+	setTimeout(() => {
+		PLAYER.set_physics( true )
+	}, 500)
+
+	// init cam on player
 	PLAYER.box.add( CAMERA.fixture )
 	CAMERA.fixture.position.y = 1
-	PLAYERS[ PLAYER.uuid ] = PLAYER
-	SCENE.add( PLAYER.box )
+	if( !ENTITIES.includes( PLAYER ) ) ENTITIES.push( PLAYER )
+
+	if( location.href.match(/localhost/) ) {
+		const DEV_INTERVAL = setInterval(() => {
+			// console.log( PLAYER.state )
+		}, 1000)
+	}
 
 	const START_CAM_DIST = 2
 	// camera / controls
@@ -52,9 +64,8 @@ import SCENE from '../three/SCENE.js?v=5'
 	animate()
 
 
-
 	// plants
-	for( let i = 0; i < 5; i++ ){
+	for( let i = 0; i < 1; i++ ){
 		BROKER.publish('CANOPY_ADD_PLANT', {
 			data: {
 				type: 'tree',
