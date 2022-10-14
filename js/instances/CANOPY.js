@@ -1,9 +1,9 @@
-// import Plant from '../classes/Plant.js?v=6'
-import BROKER from '../EventBroker.js?v=6'
-import Canopy from '../classes/Canopy.js?v=6'
-import PlantVoxel from '../classes/plants/PlantVoxel.js?v=6'
-// import PlantModel from '../classes/plants/PlantModel.js?v=6'
-import ENTITIES from '../registers/ENTITIES.js?v=6'
+// import Plant from '../classes/Plant.js?v=7'
+import BROKER from '../EventBroker.js?v=7'
+import Canopy from '../classes/Canopy.js?v=7'
+import PlantVoxel from '../classes/plants/PlantVoxel.js?v=7'
+// import PlantModel from '../classes/plants/PlantModel.js?v=7'
+import ENTITIES from '../registers/ENTITIES.js?v=7'
 
 
 

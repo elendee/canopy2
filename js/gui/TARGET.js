@@ -1,9 +1,9 @@
-import BROKER from '../EventBroker.js?v=6'
+import BROKER from '../EventBroker.js?v=7'
 
 
 const set = event => {
 	const { mesh, caller } = event
-	console.log('clicked: ', mesh.userData )
+	console.log('clicked: ', mesh?.userData )
 }
 
 

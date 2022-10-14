@@ -1,29 +1,32 @@
-import * as lib from '../lib.js?v=6'
-// import ENTITIES from '../registers/ENTITIES.js?v=6'
-import RAYCASTER from '../three/RAYCASTER.js?v=6'
-import SCENE from '../three/SCENE.js?v=6'
+import * as lib from '../lib.js?v=7'
+// import ENTITIES from '../registers/ENTITIES.js?v=7'
+import RAYCASTER from '../three/RAYCASTER.js?v=7'
+import SCENE from '../three/SCENE.js?v=7'
 
 
 
 
 
-const ANIM_STEP = 50
-const FALL_TEST = 200
-const FALL_GRACE = .1
-const FALL_HOVER = FALL_GRACE / 2
+const ANIM_STEP = 20
+const FALL_TEST_SLOW = 500
+const FALL_TEST_FAST = 10
+const FALL_ACCELERATION = .004
+const FALL_WIDTH = .3
+const JUMP_SPRING = .2
+const STEP_HEIGHT = .25
+const HOVER = STEP_HEIGHT / 2
 
-const GRAVITY = 1
+const GRAVITY = .1
 const DOWN = new THREE.Vector3(0, -1, 0)
-const NEARBY_DIST = 5
-// const FALL_TEST_RANGE = 10 // Entity within range will test - but their children may be way different
-
-const COLLIDE_DIST = 1
+const NEARBY_DIST = 3
+// const COLLIDE_DIST = 1
 
 const nearbyMat = new THREE.MeshPhongMaterial({
 	color: 'blue',
 })
 
 const WORLD_POS_HOLDER = new THREE.Vector3()
+const PROJECTION_HOLDER = new THREE.Vector3()
 let directionality = {
 	one: false,
 	two: false,
@@ -60,6 +63,7 @@ class Entity {
 			point: new THREE.Vector3(),
 			object: false,
 		}
+		this.momentum = new THREE.Vector3()
 		this.landing_int = false // vec 3
 		this.ghost = {
 			next: new THREE.Object3D(),
@@ -84,33 +88,18 @@ class Entity {
 		if( this.box ) return console.log('dupe init called', this )
 		this.box = new THREE.Group()
 
-		// switch( this.type ){
-
-		// 	case 'plant':
-		// 		this.model = await this._load_model()
-		// 		break;
-
-		// 	case 'canopy':
-		// 		this.model = await this._build_model()
-		// 		break;
-
-		// 	case 'player':
-		// 		this.model = await this._load_model( this.model_url )
-		// 		break;
-
-		// 	default:
-		// 		return console.log('unable to load type', this.type )
-
-		// }
 		this.model = await this._load_model()
+
+		// this.model.position.y -= HOVER // ( because box is held up at step height )
 
 		if( this.animation ) this.anim_mixer = this.animation.mixer // ( for anim loop access )
 
 		this.box.add( this.model )
 
 		this.box.userData = {
-			clickable: true,
-			type: this.type,
+			// clickable: define individually
+			obj_type: this.type,
+			mesh_type: this.mesh_type,
 		}
 
 		// dimensions / scaling
@@ -176,17 +165,21 @@ class Entity {
 	// movement & animation
 	// ----------------------------------------------------------------
 
+	set_gravity_resolution( ms ){
+		if( this.gravity ) clearInterval( this.gravity )
+		this.gravity = setInterval(() => {
+			this.update_landing()
+			// console.log( this.landing_int )
+		}, ms )
+	}
+
 	set_physics( state ){
 		/* 
 			start ghost obj
 			start nearby objs refresh pulse
 		*/
 
-		if( !this.gravity ){
-			this.gravity = setInterval(() => {
-				this.update_landing()
-			}, FALL_TEST )			
-		}
+		this.set_gravity_resolution( FALL_TEST_SLOW )
 
 		this.ghost.next.position.copy( this.box.position )
 		// this.ghost.last.position.copy( this.box.position )
@@ -203,7 +196,7 @@ class Entity {
 					if( obj === this ) continue
 					// if( !obj.traverse ) return console.log('um', obj )
 					obj.box.traverse( child => {
-						if( child.isMesh && child.userData?.collide_radius ){
+						if( child.isMesh && child.userData?.standable ){
 							// if( !child.originalColor ) child.originalColor = {
 							// 	r: child.material.color.r,
 							// 	g: child.material.color.g,
@@ -226,7 +219,7 @@ class Entity {
 								// for( const c in child.originalColor ){
 								// 	child.material.color[c] = child.originalColor[c]
 								// }
-								console.log( 'tried to restore', child.originalColor  )
+								// console.log( 'restored NEARBY color', child.originalColor  )
 							}
 						}
 					})
@@ -285,44 +278,69 @@ class Entity {
 			this.momentum.clampLength( -GRAVITY, GRAVITY )
 			this.ghost.next.position.add( this.momentum )
 			// .y -= Math.max( this.momentum.y, GRAVITY )
-			if( this.landing_int && this.ghost.next.position.y <= this.landing_int.point.y + FALL_GRACE ){
+			if( this.landing_int && this.ghost.next.position.y <= this.landing_int.point.y + STEP_HEIGHT ){
 				this.ghost.next.position.y = this.landing_int.point.y
 				this.ghost.next.quaternion.copy( this.box.quaternion )
-				console.log('landed')
+				// console.log('landed')
+				// this.isFalling = false
 				return this.stand_on( this.landing_int )
 			}
-			// if( this.box.position.y <= 0 ) {
-			// 	delete this.isFalling
-			// 	return this.box.position.y = 0
-			// }
-			// this.intersect = this.test_landing() // return int.object
-			// if( this.intersect ){
-			// 	this.stand_on( this.intersect )
-			// }
 
 		}
 
-		// collisions
+		// handle collisions
 		for( const mesh of this.NEARBY ){
 			mesh.getWorldPosition( WORLD_POS_HOLDER )
-			this.collided = lib.collide_test( WORLD_POS_HOLDER, mesh.userData?.collide_radius, this.ghost.next.position, this.radius )
-			if( this.collided ){ 
-				// test if player is moving -towards- collision or away
-				mesh.getWorldPosition( WORLD_POS_HOLDER )
-				directionality.current = this.box.position.distanceTo( WORLD_POS_HOLDER )
-				mesh.getWorldPosition( WORLD_POS_HOLDER )
-				directionality.next = this.ghost.next.position.distanceTo( WORLD_POS_HOLDER )
-				if( directionality.next < directionality.current ){
-					// reset coords
-					// this.box.position.copy( this.ghost.last.position )
-					// this.box.quaternion.copy( this.ghost.last.quaternion )
+
+			const bumpers = mesh.userData.collide_radius + this.collide_radius
+			const dist = WORLD_POS_HOLDER.distanceTo( this.ghost.next.position )
+			const projected_dist = this.box.position.distanceTo( this.ghost.next.position )
+
+			if( bumpers < dist ){ 
+				RAYCASTER.set( 
+					this.box.position, 
+					PROJECTION_HOLDER.subVectors( this.ghost.next.position, this.box.position ),
+					0, 
+					projected_dist 
+				)
+				const intersects = RAYCASTER.intersectObjects( this.NEARBY, true )
+				if( intersects.length ){
 					this.ghost.next.position.copy( this.box.position )
-					this.ghost.next.quaternion.copy( this.box.quaternion )
-					// console.log( this.collided )
-					break;					
+					break;
+					// for( const int of intersects ){
+					// 	// console.log('comparing: ', int.point.y , )
+					// 	if( int.point.y > this.ghost.next.position.y + STEP_HEIGHT ){ // allow 'step ups'
+					// 		// collide; set back
+					// 		this.ghost.next.position.copy( this.box.position )
+					// 		break;							
+					// 	}
+					// 	debugger
+					// }
 				}
 
+			}else{
+				// player is 'inside' the object already
 			}
+
+			// this.collided = lib.sphere_test( WORLD_POS_HOLDER, mesh.userData?.collide_radius, this.ghost.next.position, this.radius )
+
+			// if( this.collided ){ 
+			// 	// test if player is moving -towards- collision or away
+			// 	mesh.getWorldPosition( WORLD_POS_HOLDER )
+			// 	directionality.current = this.box.position.distanceTo( WORLD_POS_HOLDER )
+			// 	mesh.getWorldPosition( WORLD_POS_HOLDER )
+			// 	directionality.next = this.ghost.next.position.distanceTo( WORLD_POS_HOLDER )
+			// 	if( directionality.next < directionality.current ){
+			// 		// reset coords
+			// 		// this.box.position.copy( this.ghost.last.position )
+			// 		// this.box.quaternion.copy( this.ghost.last.quaternion )
+			// 		this.ghost.next.position.copy( this.box.position )
+			// 		this.ghost.next.quaternion.copy( this.box.quaternion )
+			// 		// console.log( this.collided )
+			// 		break;					
+			// 	}
+
+			// }
 		}
 		this.box.position.copy( this.ghost.next.position )
 
@@ -349,49 +367,79 @@ class Entity {
 	// gravity
 	// ----------------------------------------------------------------
 
-	fall(){
-		if( !this.momentum?.isVector3 ) this.momentum = new THREE.Vector3()
-		this.isFalling = true
-	}
-
 	stand_on( landing_int ){
-		// clearInterval( this.isFalling )
+		// clearInterval( this.is-Falling )
 		delete this.isFalling
-		delete this.momentum
+		this.momentum.set(0,0,0)
 		this.landing_int = landing_int
-		this.box.position.y = landing_int.point.y + FALL_HOVER//object.position.y
+		this.box.position.y = landing_int.point.y //+ HOVER//object.position.y
+		this.animate('victory', false, 50)
+		// this.animate('')
 	}
 
 	update_landing(){
 		/*
 			runs on slow-ish interval not on frame
 		*/
-		if( this.jumping ) return
+		// if( this.jumping ) return
 
-		this.closest.updated = false
 		// delete this.landing_int
 
-		RAYCASTER.set( this.box.position, DOWN ) // box / ghost, not sure..
-		const intersects = RAYCASTER.intersectObjects( SCENE.children, true )
 		this.closest.distance = 99999
 		this.closest.updated = false
-		// console.log('testing down: ', intersects.length )
-		for( const int of intersects ){
-			if( int.object.userData?.standable ){
-				if( int.distance < this.closest.distance ){
-					this.closest = int
-					this.closest.updated = true
+
+		for( let x = 0; x < 2; x++ ){
+			for( let z = 0; z < 2; z++ ){
+
+				const dummy = this.box.position.clone()
+				dummy.x += ( FALL_WIDTH - (x * FALL_WIDTH ))
+				dummy.z += ( FALL_WIDTH - (z * FALL_WIDTH ))
+				dummy.y += STEP_HEIGHT
+
+				RAYCASTER.set( dummy, DOWN ) // box / ghost, not sure..
+				const intersects = RAYCASTER.intersectObjects( SCENE.children, true )
+
+				// console.log('testing down: ', intersects.length )
+				for( const int of intersects ){
+					if( int.object.userData?.standable ){
+						// console.log('standable')
+						if( int.distance < this.closest.distance ){
+						// console.log('standable is close')
+							this.closest = int
+							this.closest.updated = true
+							break;
+						}
+					}
 				}
 			}
 		}
 
 		// detect new lateral movements 
-		if( this.closest.updated && this.closest.object !== this.landing_int?.object ){
-			this.landing_int = this.closest
-			// this.fall()
-			// console.log('updated landing')
+		// this.closest.object !== this.landing_int?.object  // << - this introduces an off-by-one possibility where player never falls...
+		if( this.closest.updated ){ 
+			if( this.closest.distance < .3 ){ // point is close and above the player.. step up
+				// actually - it's LATERAL collision that blocks this mainly, but doesnt hurt...
+				if( this.closest.point.y > this.box.position.y ){ 
+					this.ghost.next.position.y = this.closest.point.y
+				}else{
+
+				}
+			}else{ // far enough to / step down //  if( this.closest.distance > .2 )
+				if( this.closest.point.y < this.box.position.y ){ // point is close and above the player.. step up
+					this.landing_int = this.closest
+					this.isFalling = true	
+				}else{
+					// shouldnt happen, but intersection is far above player
+				}			
+			}
 		}
 
+	}
+
+	fall(){
+		this.momentum.y = Math.max( 0, this.momentum.y )
+		this.isFalling = true
+		this.animate('victory', true, 50)
 	}
 
 	jump(){
@@ -402,19 +450,22 @@ class Entity {
 
 				if( this.jumping ) return
 
-				this.animate('jump', true, 0 )
+				this.animate('jump', true, 30 )
+
+				this.set_gravity_resolution( FALL_TEST_FAST )
 
 				setTimeout(() => {
 					this.animate('jump', false, 200 )
 				}, 800 )
 
-				this.momentum = new THREE.Vector3(0,.15,0)
+				this.momentum = new THREE.Vector3( 0, JUMP_SPRING, 0 )
 
 				const step = 10
 				this.jumping = setInterval(() => {
-					this.momentum.y -= .004
+					this.momentum.y -= FALL_ACCELERATION
 					if( this.momentum.y <= 0 ){
 						clearInterval( this.jumping )
+						this.set_gravity_resolution( FALL_TEST_SLOW )
 						delete this.jumping
 						return this.fall()
 					}
@@ -477,7 +528,7 @@ class Entity {
 	}
 
 	animate( name, state, fadeN ){
-		if( typeof fadeN !== 'number' ){
+		if( typeof fadeN !== 'number' || fadeN < ANIM_STEP ){
 			return console.log('invalid fade', fadeN, name )
 		}
 		if( !this.animation || !name ){
@@ -492,6 +543,7 @@ class Entity {
 		if( typeof fadeN === 'number' ){
 			fades = this.animation.fades
 		}
+
 
 		if( state ){ // animate 'on'
 
@@ -529,6 +581,7 @@ class Entity {
 				}
 			}, ANIM_STEP )
 
+			// console.log('anim play:', name, state  )
 		}
 
 	}

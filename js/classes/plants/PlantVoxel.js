@@ -1,5 +1,5 @@
-import * as lib from '../../lib.js?v=6'
-import Plant from '../Plant.js?v=6'
+import * as lib from '../../lib.js?v=7'
+import Plant from '../Plant.js?v=7'
 
 const boxgeo = new THREE.BoxBufferGeometry(1,1,1)
 const boxmats = []
@@ -37,6 +37,8 @@ class Branch {
 		this.entity_uuid = init.entity_uuid // should always be passed
 		if( !init.entity_uuid ) console.error('branch is missing parent uuid')
 
+		this.plant = init.plant
+
 		this.mat = init.mat
 		this.segments = []
 
@@ -58,7 +60,8 @@ class Branch {
 
 		this.group.userData = {
 			clickable: true,
-			type: 'branch',
+			obj_type: 'plant',
+			mesh_type: 'branch',
 		}
 	}
 
@@ -71,11 +74,14 @@ class Branch {
 		segment.userData = {
 			standable: true,
 			parent_branch: this.uuid,
+			obj_type: 'plant',
+			mesh_type: 'segment',
+			plant: this.plant,
 		}
 		this.segments.push( segment )
 
 		if( !last_growth ){ // first growth from init
-			// console.log('new branch pos: ', this.position )
+			// console.log('new-branch pos: ', this.position )
 			segment.position.copy( this.position )
 
 		}else{ // following segments recurse
@@ -89,7 +95,7 @@ class Branch {
 
 			if( Math.random() < this.branchiness ){
 
-				// make new branch
+				// make new-branch
 				const new_data = {
 					direction: this.direction.clone().add( 
 						lib.random_vector_range(-1, 1).multiplyScalar( this.scraggliness ) 
@@ -105,6 +111,7 @@ class Branch {
 					growth_length: this.growth_length,
 					mat: this.mat,
 					entity_uuid: this.entity_uuid,
+					plant: this.plant,
 				}
 
 				const new_pos = new THREE.Vector3().copy( segment.position )
@@ -219,6 +226,7 @@ class PlantVoxel extends Plant {
 		this.model = new THREE.Group()
 
 		this.trunk = this.active_node = new Branch({
+			plant: this,
 			position: new THREE.Vector3(),
 			mat: this.mat,
 			taper: this.taper,
@@ -235,7 +243,6 @@ class PlantVoxel extends Plant {
 
 	}
 	
-	
-}
+} // Plant-Voxel
 
 export default PlantVoxel

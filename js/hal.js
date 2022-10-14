@@ -1,7 +1,7 @@
 
-import env from './env.js?v=6'
-// import GLOBAL from './GLOBAL.js?v=6'
-import BROKER from './EventBroker.js?v=6'
+import env from './env.js?v=7'
+// import GLOBAL from './GLOBAL.js?v=7'
+import BROKER from './EventBroker.js?v=7'
 
 // const alert_contain = document.getElementById('alert-contain')
 

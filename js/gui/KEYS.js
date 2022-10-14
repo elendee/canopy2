@@ -1,9 +1,9 @@
 
-import env from '../env.js?v=6'
+import env from '../env.js?v=7'
 
-import BINDS from './BINDS.js?v=6'
+import BINDS from './BINDS.js?v=7'
 
-import BROKER from '../EventBroker.js?v=6'
+import BROKER from '../EventBroker.js?v=7'
 
 
 
@@ -69,6 +69,12 @@ const handle_keydown = ( e ) => {
 			BROKER.publish('MOVE_KEY', {
 				type: 'pitch_down',
 				state: true,
+			})
+			break;
+			
+		case BINDS.sky.jump:
+			BROKER.publish('MOVE_KEY', {
+				type: 'jump',
 			})
 			break;
 
@@ -154,12 +160,6 @@ const handle_keyup = ( e ) => {
 
 		case BINDS.sky.reset_camera:
 			BROKER.publish('MOUSE_UNPAN')
-			break;
-
-		case BINDS.sky.jump:
-			BROKER.publish('MOVE_KEY', {
-				type: 'jump',
-			})
 			break;
 
 		default: 

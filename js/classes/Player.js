@@ -1,10 +1,12 @@
-import * as lib from '../lib.js?v=6'
-import Entity from './Entity.js?v=6'
+import * as lib from '../lib.js?v=7'
+import Entity from './Entity.js?v=7'
 
 
 // const loader = new THREE.BufferGeometryLoader();
 const loader = new THREE.GLTFLoader();
 
+
+const movers = ['running', 'walking', 'strafing', 'victory'] // probably all anims but...
 
 
 class Player extends Entity {
@@ -126,6 +128,7 @@ class Player extends Entity {
 			this.animation.actions[ type ] = this.animation.mixer.clipAction( clip )
 		}
 	}
+
 
 	// animate( delta_seconds ){
 

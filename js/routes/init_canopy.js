@@ -1,20 +1,20 @@
-import env from '../env.js?v=6'
-import BROKER from '../EventBroker.js?v=6'
-import Canopy from "../classes/Canopy.js?v=6";
-import CANOPY from "../instances/CANOPY.js?v=6";
-import Plant from "../classes/Plant.js?v=6";
-// import Player from '../classes/Player.js?v=6'
-import PLAYER from '../instances/PLAYER.js?v=6'
-import animate from '../animate.js?v=6';
-import KEYS from '../gui/KEYS.js?v=6';
-import CAMERA from '../three/CAMERA.js?v=6';
-import RENDERER from '../three/RENDERER.js?v=6';
-import MOUSE from '../gui/MOUSE.js?v=6';
-import ENTITIES from '../registers/ENTITIES.js?v=6'
-// import PLAYERS from '../registers/PLAYERS.js?v=6';
-import TARGET from '../gui/TARGET.js?v=6';
-import LIGHT from '../three/LIGHT.js?v=6'
-import SCENE from '../three/SCENE.js?v=6'
+import env from '../env.js?v=7'
+import BROKER from '../EventBroker.js?v=7'
+import Canopy from "../classes/Canopy.js?v=7";
+import CANOPY from "../instances/CANOPY.js?v=7";
+import Plant from "../classes/Plant.js?v=7";
+// import Player from '../classes/Player.js?v=7'
+import PLAYER from '../instances/PLAYER.js?v=7'
+import animate from '../animate.js?v=7';
+import KEYS from '../gui/KEYS.js?v=7';
+import CAMERA from '../three/CAMERA.js?v=7';
+import RENDERER from '../three/RENDERER.js?v=7';
+import MOUSE from '../gui/MOUSE.js?v=7';
+import ENTITIES from '../registers/ENTITIES.js?v=7'
+// import PLAYERS from '../registers/PLAYERS.js?v=7';
+import TARGET from '../gui/TARGET.js?v=7';
+import LIGHT from '../three/LIGHT.js?v=7'
+import SCENE from '../three/SCENE.js?v=7'
 
 
 ;(async() => {
@@ -36,12 +36,21 @@ import SCENE from '../three/SCENE.js?v=6'
 		speed: 3,
 	}
 
+	// automatic stuff:
 	PLAYER.hydrate( spoofed_player_init )
 	await PLAYER.init_model()
 	PLAYER.scaleTo( PLAYER.height )
 	PLAYER.update_bbox( true )
+	PLAYER.box.userData = {
+		clickable: true,
+		obj_type: 'player',
+		mesh_type: 'figure',
+	}
+
+	// relative stuff:
 	PLAYER.box.position.set(0, 0, 3)
 	SCENE.add( PLAYER.box )
+
 	setTimeout(() => {
 		PLAYER.set_physics( true )
 	}, 500)
@@ -63,7 +72,6 @@ import SCENE from '../three/SCENE.js?v=6'
 	CAMERA.lookAt( CAMERA.fixture.position )
 
 	animate()
-
 
 	// plants
 	for( let i = 0; i < 5; i++ ){

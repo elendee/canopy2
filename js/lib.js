@@ -1,8 +1,8 @@
-import env from './env.js?v=6'
-import hal from './hal.js?v=6'
-// import fetch_wrap from './fetch_wrap.js?v=6'
+import env from './env.js?v=7'
+import hal from './hal.js?v=7'
+// import fetch_wrap from './fetch_wrap.js?v=7'
 
-import BROKER from './EventBroker.js?v=6'
+import BROKER from './EventBroker.js?v=7'
 
 // import { 
 // 	Object3D, 
@@ -621,7 +621,7 @@ function random_rgb( p1, p2, p3 ){
 }
 
 
-const collide_test = ( pos1, mesh1_radius, pos2, mesh2_radius ) => {
+const sphere_test = ( pos1, mesh1_radius, pos2, mesh2_radius ) => {
 	mesh1_radius = mesh1_radius || .1
 	mesh2_radius = mesh2_radius || .1
 	if( !mesh1_radius || !mesh2_radius ) return console.log('invalid collide radii')
@@ -692,5 +692,5 @@ export {
 	get_bbox,
 	average_bbox,
 	random_rgb,
-	collide_test,
+	sphere_test,
 }

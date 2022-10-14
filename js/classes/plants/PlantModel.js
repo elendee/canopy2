@@ -1,4 +1,4 @@
-import Plant from '../Plant.js?v=6'
+import Plant from '../Plant.js?v=7'
 
 class PlantModel extends Plant {
 	constructor(init){

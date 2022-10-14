@@ -1,5 +1,5 @@
-import * as lib from '../lib.js?v=6'
-import Entity from './Entity.js?v=6'
+import * as lib from '../lib.js?v=7'
+import Entity from './Entity.js?v=7'
 
 const dishgeo = new THREE.CylinderGeometry(1,1,1, 32) // rt, rb, h, segs
 const dishmat = new THREE.MeshPhongMaterial({
@@ -27,7 +27,10 @@ class Canopy extends Entity {
 		this.dish = new THREE.Mesh( dishgeo, dishmat )
 		this.dish.receiveShadow = true
 		this.dish.userData = {
+			clickable: true,
 			standable: true,
+			obj_type: 'canopy',
+			mesh_type: 'dish',
 		}
 		this.dish.scale.y = .1
 		this.dish.scale.x = this.radius
@@ -84,6 +87,12 @@ class Canopy extends Entity {
 					arc 
 				)
 				const ring = new THREE.Mesh( ring_geo, ring_mat )
+				ring.userData = {
+					clickable: true,
+					standable: true,
+					obj_type: 'canopy',
+					mesh_type: 'ring',
+				}
 				ring.receiveShadow = true
 				ring.rotation.x = Math.PI / 2
 				ring.position.set( 0, -i * 5, 0 )
