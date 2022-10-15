@@ -1,5 +1,6 @@
 import * as lib from './lib.js?v=8'
 import PLANT_FACTORY from './PLANT_FACTORY.js?v=8'
+import BROKER from './EventBroker.js?v=8'
 
 
 const dev = lib.b('div')
