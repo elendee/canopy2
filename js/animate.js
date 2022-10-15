@@ -1,7 +1,12 @@
 // import PLAYERS from './registers/PLAYERS.js?v=7'
 import ENTITIES from './registers/ENTITIES.js?v=7'
 import SCENE from './three/SCENE.js?v=7'
+import { leavesMaterial } from './three/GRASS.js?v=7'
 
+
+
+
+const clock = new THREE.Clock()
 
 
 let now, delta, delta_seconds
@@ -36,6 +41,9 @@ const animate = () => {
 	for( const entity of ENTITIES ){
 		entity.update( delta_seconds )
 	}
+
+	leavesMaterial.uniforms.time.value = clock.getElapsedTime();
+	leavesMaterial.uniformsNeedUpdate = true;
 
 	if( animating ) requestAnimationFrame( animate )
 

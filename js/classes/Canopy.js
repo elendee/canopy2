@@ -2,8 +2,8 @@ import * as lib from '../lib.js?v=7'
 import Entity from './Entity.js?v=7'
 
 const dishgeo = new THREE.CylinderGeometry(1,1,1, 32) // rt, rb, h, segs
-const dishmat = new THREE.MeshPhongMaterial({
-	color: 'rgb(50, 40, 50)',
+const dishmat = new THREE.MeshStandardMaterial({
+	color: 'rgb(10, 40, 10)',
 	side: THREE.DoubleSide,
 })
 
