@@ -4,17 +4,21 @@ import Canopy from "../classes/Canopy.js?v=7";
 import CANOPY from "../instances/CANOPY.js?v=7";
 import Plant from "../classes/Plant.js?v=7";
 // import Player from '../classes/Player.js?v=7'
+import * as lib from '../lib.js?v=7'
 import PLAYER from '../instances/PLAYER.js?v=7'
 import animate from '../animate.js?v=7';
 import KEYS from '../gui/KEYS.js?v=7';
 import CAMERA from '../three/CAMERA.js?v=7';
 import RENDERER from '../three/RENDERER.js?v=7';
 import MOUSE from '../gui/MOUSE.js?v=7';
-import ENTITIES from '../registers/ENTITIES.js?v=7'
+import ENTITIES from '../registers/ENTITIES.js?v=7';
 // import PLAYERS from '../registers/PLAYERS.js?v=7';
 import TARGET from '../gui/TARGET.js?v=7';
-import LIGHT from '../three/LIGHT.js?v=7'
-import SCENE from '../three/SCENE.js?v=7'
+import LIGHT from '../three/LIGHT.js?v=7';
+import SCENE from '../three/SCENE.js?v=7';
+import PLANT_FACTORY from '../PLANT_FACTORY.js?v=7';
+import DEV from '../DEV.js?v=7';
+
 
 
 ;(async() => {
@@ -39,7 +43,6 @@ import SCENE from '../three/SCENE.js?v=7'
 	// automatic stuff:
 	PLAYER.hydrate( spoofed_player_init )
 	await PLAYER.init_model()
-	PLAYER.scaleTo( PLAYER.height )
 	PLAYER.update_bbox( true )
 	PLAYER.box.userData = {
 		clickable: true,
@@ -74,15 +77,21 @@ import SCENE from '../three/SCENE.js?v=7'
 	animate()
 
 	// plants
-	for( let i = 0; i < 5; i++ ){
+	for( let i = 0; i < 2; i++ ){
 		BROKER.publish('CANOPY_ADD_PLANT', {
-			data: {
-				type: 'tree',
-				radius: 1 + Math.random(),
-				scraggliness: 3, 
-				taper: .08, // default .1
-				branchiness: .4, 
-			}
+			data:{
+				type: 'model',
+				// type: lib.random_entry( Object.keys( PLANT_FACTORY ) ),
+			},
+			// data: {
+			// 	type: 'model',
+			// 	model_url: '',
+			// 	// type: lib.random_entry( Object.keys( PLANT_FACTORY ) ),
+			// 	radius: 1 + Math.random(),
+			// 	scraggliness: 3, 
+			// 	taper: .08, // default .1
+			// 	branchiness: .4, 
+			// }
 		})
 	}
 

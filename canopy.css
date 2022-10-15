@@ -2,6 +2,7 @@
 
 *{
     box-sizing: border-box;
+    font-family: monospace;
 }
 
 body{
@@ -10,8 +11,28 @@ body{
 }
 
 canvas{
-    border: 2px solid red;
+    border: 8px solid #001b00;
     width: 100vw !important;
     height: 100vh !important;
 }
 
+
+
+#dev-panel{
+    position: fixed;
+    padding: 8px;
+    background: rgba(0,0,0, .4);
+    bottom: 0;
+}
+
+.button{
+    display: inline-block;
+    padding: 5px;
+    background: #a6a6a6;
+    cursor: pointer;
+    user-select: none;
+}
+
+.button:hover{
+    background: lightgrey;
+}

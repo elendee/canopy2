@@ -30,14 +30,14 @@ class Plant extends Entity {
 
 	async _load_model(){
 		/*
-			called by Enity.js
+			do not call directly
 		*/
 
-		console.error('this method must be defined in inherited Plants')
+					console.error('this method must be defined in inherited Plants', this )
 
-		const model = new THREE.Mesh( boxgeo, errormat )
-		model.scale.multiplyScalar( this.radius )
-		return model
+					const model = new THREE.Mesh( boxgeo, errormat )
+					model.scale.multiplyScalar( this.radius )
+					return model
 
 	}
 

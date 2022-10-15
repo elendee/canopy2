@@ -2,7 +2,6 @@ import * as lib from '../lib.js?v=7'
 import Entity from './Entity.js?v=7'
 
 
-// const loader = new THREE.BufferGeometryLoader();
 const loader = new THREE.GLTFLoader();
 
 
@@ -70,30 +69,9 @@ class Player extends Entity {
 		}
 	}
 
-	_load_model(){
-		return new Promise((resolve, reject) => {
-			loader.load( this.model_url, obj => {
-				// console.log( obj )
-				if( obj.animations?.length && this.animation_map ){
-					const map = this.animation_map[ this.modeltype ]
-					// console.log('adding anim map: ', filepath )
-					this.add_animation( obj, map )
-				}else{
-					console.log('unhandled animations for upload', this )
-				}
-				const model = obj.scene
-				let c = 0
-				model.traverse( child => {
-					if( c < 5 && child.isMesh ){ // 
-						child.castShadow = true
-						child.receiveShadow = true						
-						// console.log('traversing...', child.type )
-						c++
-					}
-				})
-				resolve( model )
-			})
-		})
+	async _load_model(){
+		const r = await this._load_model_with_anims()
+		return r
 	}
 
 	add_animation( model, animation_map ){

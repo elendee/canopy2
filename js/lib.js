@@ -256,25 +256,48 @@ function validate_number( ...vals ){
 
 }
 
-
-
 const random_range = ( low, high, int ) => {
 
 	if( low >= high ) return low
 
-	return int ? Math.floor( low + ( Math.random() * ( high - low ) ) ) : low + ( Math.random() * ( high - low ) )
+	const init = low + ( Math.random() * ( high - low ) )
+	if( int ){
+		return Math.round( init )
+	}else{
+		return init
+	}
 
 }
 
 const random_entry = source => {
 
 	if( Array.isArray( source )){
-		return source[ random_range( 0, source.length - 1, true ) ]
+		const index = random_range( 0, source.length - 1, true )
+		return source[ index ] || source[ index - 1 ] // because it can round up
 	}else if( source && typeof source === 'object'){
 		return source[ random_entry( Object.keys( source ) ) ]
 	}
 	return ''
 }
+
+
+// const random_range = ( low, high, int ) => {
+
+// 	if( low >= high ) return low
+
+// 	return int ? Math.floor( low + ( Math.random() * ( high - low ) ) ) : low + ( Math.random() * ( high - low ) )
+
+// }
+
+// const random_entry = source => {
+
+// 	if( Array.isArray( source )){
+// 		return source[ random_range( 0, source.length - 1, true ) ]
+// 	}else if( source && typeof source === 'object'){
+// 		return source[ random_entry( Object.keys( source ) ) ]
+// 	}
+// 	return ''
+// }
 
 
 
@@ -642,6 +665,16 @@ const average_bbox = bbox => {
 	return ( dims.x + dims.y + dims.z ) / 3
 }
 
+const b = type => {
+	return document.createElement( type )
+}
+
+const button = text => {
+	const b = document.createElement('div')
+	b.innerText = text
+	b.classList.add('button')
+	return b
+}
 
 
 export {
@@ -693,4 +726,6 @@ export {
 	average_bbox,
 	random_rgb,
 	sphere_test,
+	b,
+	button,
 }

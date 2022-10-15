@@ -195,6 +195,7 @@ class Branch {
 
 
 class PlantVoxel extends Plant {
+	
 	constructor(init){
 		super( init )
 		init = init || {}
@@ -210,7 +211,6 @@ class PlantVoxel extends Plant {
 			// uuid: [vox, vox],
 		}
 	}
-
 
 	async _load_model(){
 		/*

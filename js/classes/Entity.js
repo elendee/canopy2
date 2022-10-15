@@ -6,6 +6,8 @@ import SCENE from '../three/SCENE.js?v=7'
 
 
 
+const loader = new THREE.GLTFLoader()
+
 
 const ANIM_STEP = 20
 const FALL_TEST_SLOW = 500
@@ -84,6 +86,13 @@ class Entity {
 	// ----------------------------------------------------------------
 
 	async init_model(){
+		/*
+			set:
+			- this.model
+			- this.anim_mixer
+			- this.box.userData
+			- this._current_dims
+		*/
 
 		if( this.box ) return console.log('dupe init called', this )
 		this.box = new THREE.Group()
@@ -96,20 +105,26 @@ class Entity {
 
 		this.box.add( this.model )
 
-		this.box.userData = {
-			// clickable: define individually
-			obj_type: this.type,
-			mesh_type: this.mesh_type,
-		}
+		// this.box.userData = {
+		// 	// clickable: define individually
+		// 	obj_type: this.type,
+		// 	mesh_type: this.mesh_type,
+		// }
 
+		// this.box.traverse( child => {
+		// 	if( !child.children ) child.children = []
+		// })
 		// dimensions / scaling
 		this.update_bbox( true )
-		this._model_dims = {
+		this._current_dims = {
 			x: this.bbox.max.x - this.bbox.min.x,
 			y: this.bbox.max.y - this.bbox.min.y,
 			z: this.bbox.max.z - this.bbox.min.z,
 		}
 
+		if( this.model_url && typeof this.height === 'number' ){
+			this.scaleTo( this.height )
+		}
 	}
 
 	update_bbox( update_collide_radii ){
@@ -135,6 +150,33 @@ class Entity {
 	}
 
 
+	_load_model_with_anims(){
+		return new Promise((resolve, reject) => {
+			loader.load( this.model_url, obj => {
+				// console.log( obj )
+				if( obj.animations?.length && this.animation_map ){
+					const map = this.animation_map[ this.modeltype ]
+					// console.log('adding anim map: ', filepath )
+					this.add_animation( obj, map )
+				}else{
+					console.log('unhandled animations for upload', this )
+				}
+				const model = obj.scene
+				let c = 0
+				model.traverse( child => {
+					if( c < 5 && child.isMesh ){ // 
+						child.castShadow = true
+						child.receiveShadow = true						
+						// console.log('traversing...', child.type )
+						c++
+					}
+				})
+				resolve( model )
+			})
+		})
+	}
+
+
 
 	scaleTo( world_height_units ){
 		// const width = this.bbox.max.x - this.bbox.min.x
@@ -142,7 +184,7 @@ class Entity {
 		// const depth = this.bbox.max.z - this.bbox.min.z
 		this.model.scale.set(1,1,1)
 
-		const scalar = world_height_units / this._model_dims.y
+		const scalar = world_height_units / this._current_dims.y
 		// const new_scale = asdf
 		this.model.scale.multiplyScalar( scalar )
 	}

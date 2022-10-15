@@ -176,7 +176,7 @@ const handle_keyup = ( e ) => {
 document.addEventListener('keyup', handle_keyup )
 document.addEventListener('keydown', handle_keydown )		
 
-if( env.EXPOSE ) window.KEYS = keys
+// if( env.EXPOSE ) window.KEYS = keys
 
 
 

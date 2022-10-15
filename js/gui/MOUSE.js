@@ -282,7 +282,7 @@ const set_cam_state = first_person => {
 	if( !PLAYER.box ) return
 	if( first_person ){
 		STATE.first_person = true
-		CAMERA.position.set(0,0,-1)
+		CAMERA.position.set(0,0,0)
 		PLAYER.box.visible = false
 		CAMERA.rotation.x = Math.PI
 	}else{
@@ -377,6 +377,10 @@ function detect_object_clicked( e, bounds ){
 		x: x, 
 		y: y
 	}, CAMERA )
+
+	if( !SCENE.children?.length ){
+		debugger
+	}
 
 	const intersects = RAYCASTER.intersectObjects( SCENE.children, true ) // [ objects ], recursive (children) (ok to turn on if needed)
 
