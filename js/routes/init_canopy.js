@@ -1,23 +1,23 @@
-import env from '../env.js?v=7'
-import BROKER from '../EventBroker.js?v=7'
-import Canopy from "../classes/Canopy.js?v=7";
-import CANOPY from "../instances/CANOPY.js?v=7";
-import Plant from "../classes/Plant.js?v=7";
-// import Player from '../classes/Player.js?v=7'
-import * as lib from '../lib.js?v=7'
-import PLAYER from '../instances/PLAYER.js?v=7'
-import animate from '../animate.js?v=7';
-import KEYS from '../gui/KEYS.js?v=7';
-import CAMERA from '../three/CAMERA.js?v=7';
-import RENDERER from '../three/RENDERER.js?v=7';
-import MOUSE from '../gui/MOUSE.js?v=7';
-import ENTITIES from '../registers/ENTITIES.js?v=7';
-// import PLAYERS from '../registers/PLAYERS.js?v=7';
-import TARGET from '../gui/TARGET.js?v=7';
-import LIGHT from '../three/LIGHT.js?v=7';
-import SCENE from '../three/SCENE.js?v=7';
-import PLANT_FACTORY from '../PLANT_FACTORY.js?v=7';
-import DEV from '../DEV.js?v=7';
+import env from '../env.js?v=8'
+import BROKER from '../EventBroker.js?v=8'
+import Canopy from "../classes/Canopy.js?v=8";
+import CANOPY from "../instances/CANOPY.js?v=8";
+import Plant from "../classes/Plant.js?v=8";
+// import Player from '../classes/Player.js?v=8'
+import * as lib from '../lib.js?v=8'
+import PLAYER from '../instances/PLAYER.js?v=8'
+import animate from '../animate.js?v=8';
+import KEYS from '../gui/KEYS.js?v=8';
+import CAMERA from '../three/CAMERA.js?v=8';
+import RENDERER from '../three/RENDERER.js?v=8';
+import MOUSE from '../gui/MOUSE.js?v=8';
+import ENTITIES from '../registers/ENTITIES.js?v=8';
+// import PLAYERS from '../registers/PLAYERS.js?v=8';
+import TARGET from '../gui/TARGET.js?v=8';
+import LIGHT from '../three/LIGHT.js?v=8';
+import SCENE from '../three/SCENE.js?v=8';
+import PLANT_FACTORY from '../PLANT_FACTORY.js?v=8';
+import DEV from '../DEV.js?v=8';
 
 
 
@@ -80,8 +80,9 @@ import DEV from '../DEV.js?v=7';
 	for( let i = 0; i < 2; i++ ){
 		BROKER.publish('CANOPY_ADD_PLANT', {
 			data:{
-				type: 'model',
-				// type: lib.random_entry( Object.keys( PLANT_FACTORY ) ),
+				// type: 'model',
+				height: Math.random() * 10 + 1,
+				type: lib.random_entry( Object.keys( PLANT_FACTORY ) ),
 			},
 			// data: {
 			// 	type: 'model',

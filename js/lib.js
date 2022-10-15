@@ -1,8 +1,8 @@
-import env from './env.js?v=7'
-import hal from './hal.js?v=7'
-// import fetch_wrap from './fetch_wrap.js?v=7'
+import env from './env.js?v=8'
+import hal from './hal.js?v=8'
+// import fetch_wrap from './fetch_wrap.js?v=8'
 
-import BROKER from './EventBroker.js?v=7'
+import BROKER from './EventBroker.js?v=8'
 
 // import { 
 // 	Object3D, 

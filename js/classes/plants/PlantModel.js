@@ -1,4 +1,4 @@
-import Plant from '../Plant.js?v=7'
+import Plant from '../Plant.js?v=8'
 
 
 
@@ -12,13 +12,14 @@ const loader = new THREE.GLTFLoader()
 
 const callbacks = []
 
-const remap_mats = ( model, slug ) => {
+const process_model = ( model, slug ) => {
 
 	switch( slug ){
 		case 'pine.glb':
 			model.traverse( child => {
 				if( child.material ){
 					child.material = pine_mat
+					child.castShadow = true
 				}
 			})
 			// model.material.color.set(  )
@@ -56,7 +57,7 @@ class PlantModel extends Plant {
 
 		const splits = this.model_url.split('/')
 		const slug = splits[ splits.length - 1 ]
-		remap_mats( r, slug )
+		process_model( r, slug )
 
 		return r
 	}

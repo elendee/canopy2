@@ -1,5 +1,5 @@
-import Player from '../classes/Player.js?v=7'
-import BROKER from '../EventBroker.js?v=7'
+import Player from '../classes/Player.js?v=8'
+import BROKER from '../EventBroker.js?v=8'
 
 
 // --------------------

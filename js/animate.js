@@ -1,7 +1,7 @@
-// import PLAYERS from './registers/PLAYERS.js?v=7'
-import ENTITIES from './registers/ENTITIES.js?v=7'
-import SCENE from './three/SCENE.js?v=7'
-// import { leavesMaterial } from './three/GRASS.js?v=7'
+// import PLAYERS from './registers/PLAYERS.js?v=8'
+import ENTITIES from './registers/ENTITIES.js?v=8'
+import SCENE from './three/SCENE.js?v=8'
+// import { leavesMaterial } from './three/GRASS.js?v=8'
 
 
 

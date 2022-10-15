@@ -1,5 +1,5 @@
-import * as lib from '../../lib.js?v=7'
-import Plant from '../Plant.js?v=7'
+import * as lib from '../../lib.js?v=8'
+import Plant from '../Plant.js?v=8'
 
 const boxgeo = new THREE.BoxBufferGeometry(1,1,1)
 const boxmats = []

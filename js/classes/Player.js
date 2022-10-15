@@ -1,5 +1,5 @@
-import * as lib from '../lib.js?v=7'
-import Entity from './Entity.js?v=7'
+import * as lib from '../lib.js?v=8'
+import Entity from './Entity.js?v=8'
 
 
 const loader = new THREE.GLTFLoader();

@@ -1,19 +1,19 @@
-import SCENE from './SCENE.js?v=7'
+import SCENE from './SCENE.js?v=8'
 
 // light
 // const LIGHT = new THREE.HemisphereLight(0xffffff, 0x080820, 1)
-const LIGHT = window.LIGHT = new THREE.DirectionalLight(0xffffff, 1) // , 0x080820, 1
-LIGHT.position.set( 20, 100, 0)
+const LIGHT = new THREE.DirectionalLight(0xffffff, 1) // , 0x080820, 1
+LIGHT.position.set( 40, 70, 0)
 LIGHT.castShadow = true
-LIGHT.shadow.mapSize.width = 512; // default
-LIGHT.shadow.mapSize.height = 512; // default
+LIGHT.shadow.mapSize.width = 256; // default
+LIGHT.shadow.mapSize.height = 256; // default
 LIGHT.shadow.camera.near = 0.1; // default
 LIGHT.shadow.camera.far = 500; // default
 
-LIGHT.shadow.camera.left = -CANOPY.radius;
-LIGHT.shadow.camera.right = CANOPY.radius;
-LIGHT.shadow.camera.top = CANOPY.radius;
-LIGHT.shadow.camera.bottom = -CANOPY.radius;
+LIGHT.shadow.camera.left = -CANOPY.radius * 1.5;
+LIGHT.shadow.camera.right = CANOPY.radius * 1.5;
+LIGHT.shadow.camera.top = CANOPY.radius * 1.5;
+LIGHT.shadow.camera.bottom = -CANOPY.radius * 1.5;
 
 const helper = new THREE.DirectionalLightHelper( LIGHT, 5 )
 SCENE.add( helper )
@@ -35,8 +35,10 @@ SCENE.add( AMBIENT )
 // LIGHT.shadow.camera.far = 4000;
 // LIGHT.shadow.camera.fov = 30;
 
-
-export default {
+const light = window.LIGHT = {
 	ambient: AMBIENT,
-	directional: LIGHT,
+	directional: LIGHT,	
 }
+
+
+export default light

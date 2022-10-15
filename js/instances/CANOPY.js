@@ -1,10 +1,10 @@
-// import Plant from '../classes/Plant.js?v=7'
-import * as lib from '../lib.js?v=7'
-import BROKER from '../EventBroker.js?v=7'
-import Canopy from '../classes/Canopy.js?v=7'
-// import PlantModel from '../classes/plants/PlantModel.js?v=7'
-import ENTITIES from '../registers/ENTITIES.js?v=7'
-import PLANT_FACTORY from '../PLANT_FACTORY.js?v=7'
+// import Plant from '../classes/Plant.js?v=8'
+import * as lib from '../lib.js?v=8'
+import BROKER from '../EventBroker.js?v=8'
+import Canopy from '../classes/Canopy.js?v=8'
+// import PlantModel from '../classes/plants/PlantModel.js?v=8'
+import ENTITIES from '../registers/ENTITIES.js?v=8'
+import PLANT_FACTORY from '../PLANT_FACTORY.js?v=8'
 
 
 
